@@ -37,7 +37,12 @@ class AnimatedMapController extends MapControllerImpl {
     );
 
     final animation = _createAnimation(animationController)
-      ..autoDisposeController(animationController);
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed ||
+            status == AnimationStatus.dismissed) {
+          animationController.dispose();
+        }
+      });
 
     animationController.addListener(() {
       move(
@@ -63,16 +68,5 @@ class AnimatedMapController extends MapControllerImpl {
       parent: controller,
       curve: curve,
     );
-  }
-}
-
-extension on Animation<double> {
-  void autoDisposeController(AnimationController controller) {
-    addStatusListener((status) {
-      if (status == AnimationStatus.completed ||
-          status == AnimationStatus.dismissed) {
-        controller.dispose();
-      }
-    });
   }
 }
