@@ -1,4 +1,61 @@
 include: package:flutter_lints/flutter.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+analyzer:
+  exclude:
+    - lib/**.g.dart
+    - test/**.mocks.dart
+    - lib/generated_plugin_registrant.dart
+  language:
+    strict-casts: true
+  errors:
+    missing_required_param: error
+    unrelated_type_equality_checks: error
+    must_call_super: error
+    missing_return: warning
+    close_sinks: warning
+    cancel_subscriptions: warning
+    parameter_assignments: warning
+    prefer_final_in_for_each: warning
+    prefer_mixin: warning
+    unawaited_futures: warning
+    unnecessary_await_in_return: warning
+    unnecessary_null_aware_assignments: warning
+    use_string_buffers: warning
+    avoid_unnecessary_containers: warning
+
+linter:
+  rules:
+    - always_declare_return_types
+    - avoid_bool_literals_in_conditional_expressions
+    - avoid_escaping_inner_quotes
+    - avoid_positional_boolean_parameters
+    - parameter_assignments
+    - prefer_null_aware_method_calls
+    - require_trailing_commas
+    - use_is_even_rather_than_modulo
+    - use_named_constants
+    - use_to_and_as_if_applicable
+    - prefer_relative_imports
+    - avoid_unused_constructor_parameters
+    - sort_child_properties_last
+    - directives_ordering
+    - close_sinks
+    - cancel_subscriptions
+    - unnecessary_statements
+    - avoid_annotating_with_dynamic
+    - prefer_final_locals
+    - prefer_final_in_for_each
+    - prefer_interpolation_to_compose_strings
+    - prefer_mixin
+    - unawaited_futures
+    - unnecessary_await_in_return
+    - unnecessary_lambdas
+    - unnecessary_null_aware_assignments
+    - unnecessary_parenthesis
+    - unnecessary_raw_strings
+    - use_if_null_to_convert_nulls_to_bools
+    - use_string_buffers
+    - avoid_unnecessary_containers
+    - use_build_context_synchronously
+    - always_put_required_named_parameters_first
+    - package_api_docs

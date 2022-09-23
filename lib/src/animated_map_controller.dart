@@ -55,8 +55,15 @@ class AnimatedMapController extends MapControllerImpl {
     return animationController.forward();
   }
 
-  Future<void> animatedRotateFrom(double degree) =>
-      animatedTo(rotation: rotation + degree);
+  Future<void> animatedRotateFrom(
+    double degree, {
+    RotationDirection direction = RotationDirection.right,
+  }) =>
+      animatedTo(
+        rotation: rotation +
+            (direction == RotationDirection.right ? degree : -degree),
+      );
+
   Future<void> animatedRotateTo(double degree) => animatedTo(rotation: degree);
   Future<void> animatedRotateReset() => animatedTo(rotation: 0);
   Future<void> animatedZoomIn() => animatedTo(zoom: zoom + 1);
@@ -70,3 +77,5 @@ class AnimatedMapController extends MapControllerImpl {
     );
   }
 }
+
+enum RotationDirection { left, right }
