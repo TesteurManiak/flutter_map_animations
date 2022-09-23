@@ -36,8 +36,10 @@ class AnimatedMapController extends MapControllerImpl {
       duration: duration,
     );
 
-    final animation = _createAnimation(animationController)
-      ..addStatusListener((status) {
+    final animation = CurvedAnimation(
+      parent: animationController,
+      curve: curve,
+    )..addStatusListener((status) {
         if (status == AnimationStatus.completed ||
             status == AnimationStatus.dismissed) {
           animationController.dispose();
@@ -63,11 +65,4 @@ class AnimatedMapController extends MapControllerImpl {
   Future<void> animatedZoomIn() => animatedTo(zoom: zoom + 1);
   Future<void> animatedZoomOut() => animatedTo(zoom: zoom - 1);
   Future<void> animatedZoomTo(double newZoom) => animatedTo(zoom: newZoom);
-
-  Animation<double> _createAnimation(AnimationController controller) {
-    return CurvedAnimation(
-      parent: controller,
-      curve: curve,
-    );
-  }
 }
