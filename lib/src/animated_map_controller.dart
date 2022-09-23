@@ -2,6 +2,7 @@ import 'package:flutter/animation.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 
+/// A [MapController] that provides animated methods.
 class AnimatedMapController extends MapControllerImpl {
   AnimatedMapController({
     required this.vsync,
@@ -13,7 +14,7 @@ class AnimatedMapController extends MapControllerImpl {
   final Duration duration;
   final Curve curve;
 
-  Future<void> animatedTo({LatLng? dest, double? zoom, double? rotation}) {
+  Future<void> animateTo({LatLng? dest, double? zoom, double? rotation}) {
     final latTween = Tween<double>(
       begin: center.latitude,
       end: dest?.latitude ?? center.latitude,
@@ -57,12 +58,15 @@ class AnimatedMapController extends MapControllerImpl {
     return animationController.forward();
   }
 
-  Future<void> animatedRotateFrom(double degree) =>
-      animatedTo(rotation: rotation + degree);
-  Future<void> animatedRotateTo(double degree) => animatedTo(rotation: degree);
-  Future<void> animatedRotateReset() => animatedTo(rotation: 0);
+  Future<void> centerOnPoint(LatLng point, {double? zoom}) =>
+      animateTo(dest: point, zoom: zoom);
 
-  Future<void> animatedZoomIn() => animatedTo(zoom: zoom + 1);
-  Future<void> animatedZoomOut() => animatedTo(zoom: zoom - 1);
-  Future<void> animatedZoomTo(double newZoom) => animatedTo(zoom: newZoom);
+  Future<void> animatedRotateFrom(double degree) =>
+      animateTo(rotation: rotation + degree);
+  Future<void> animatedRotateTo(double degree) => animateTo(rotation: degree);
+  Future<void> animatedRotateReset() => animateTo(rotation: 0);
+
+  Future<void> animatedZoomIn() => animateTo(zoom: zoom + 1);
+  Future<void> animatedZoomOut() => animateTo(zoom: zoom - 1);
+  Future<void> animatedZoomTo(double newZoom) => animateTo(zoom: newZoom);
 }

@@ -18,22 +18,24 @@ class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
 }
 ```
 
-You can specify the animation duration and curve.
+You can specify the animation `duration` and `curve`.
+
+And add it to your `FlutterMap` widget:
 
 ```dart
-AnimatedMapController({
-    required this.vsync,
-    this.duration = const Duration(milliseconds: 500),
-    this.curve = Curves.fastOutSlowIn,
-});
+FlutterMap(
+    mapController: _mapController,
+    // ...
+)
 ```
 
 ## Methods
 
-* `animatedTo({LatLng? dest, double? zoom, double? rotation})`
+* `animateTo({LatLng? dest, double? zoom, double? rotation})`
 * `animatedRotateFrom(double degree)`
 * `animatedRotateTo(double degree)`
 * `animatedRotateReset()`
 * `animatedZoomTo(double newZoom)`
 * `animatedZoomIn()`
 * `animatedZoomOut()`
+* `centerOnPoint(LatLng point, {double? zoom})`
