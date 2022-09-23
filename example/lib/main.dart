@@ -74,10 +74,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 8),
           FloatingActionButton(
-            onPressed: () => _mapController.animatedRotateFrom(
-              90,
-              direction: RotationDirection.left,
-            ),
+            onPressed: () => _mapController.animatedRotateFrom(-90),
             tooltip: 'Rotate -90°',
             child: const Icon(Icons.rotate_left),
           ),
