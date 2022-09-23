@@ -13,11 +13,7 @@ class AnimatedMapController extends MapControllerImpl {
   final Duration duration;
   final Curve curve;
 
-  Future<void> animatedGoTo({
-    LatLng? dest,
-    double? zoom,
-    double? rotation,
-  }) {
+  Future<void> animatedTo({LatLng? dest, double? zoom, double? rotation}) {
     final latTween = Tween<double>(
       begin: center.latitude,
       end: dest?.latitude ?? center.latitude,
@@ -55,13 +51,12 @@ class AnimatedMapController extends MapControllerImpl {
   }
 
   Future<void> animatedRotateFrom(double degree) =>
-      animatedGoTo(rotation: rotation + degree);
-  Future<void> animatedRotateReset() => animatedGoTo(rotation: 0);
-  Future<void> animatedZoomIn() => animatedGoTo(zoom: zoom + 1);
-  Future<void> animatedZoomOut() => animatedGoTo(zoom: zoom - 1);
-  Future<void> animatedZoom(double newZoom) => animatedGoTo(zoom: newZoom);
-  Future<void> animatedRotate(double newRotation) =>
-      animatedGoTo(rotation: newRotation);
+      animatedTo(rotation: rotation + degree);
+  Future<void> animatedRotateTo(double degree) => animatedTo(rotation: degree);
+  Future<void> animatedRotateReset() => animatedTo(rotation: 0);
+  Future<void> animatedZoomIn() => animatedTo(zoom: zoom + 1);
+  Future<void> animatedZoomOut() => animatedTo(zoom: zoom - 1);
+  Future<void> animatedZoomTo(double newZoom) => animatedTo(zoom: newZoom);
 
   Animation<double> _createAnimation(AnimationController controller) {
     return CurvedAnimation(

@@ -59,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         mainAxisSize: MainAxisSize.min,
         children: [
           FloatingActionButton(
-            onPressed: () => _mapController.animatedGoTo(
+            onPressed: () => _mapController.animatedTo(
               dest: LatLng(48.5, 2.2),
               zoom: 5,
             ),
