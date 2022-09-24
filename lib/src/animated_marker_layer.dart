@@ -31,7 +31,7 @@ class AnimatedMarker {
     this.rotateAlignment,
     this.duration = const Duration(milliseconds: 200),
     this.curve = Curves.easeInOutCirc,
-    AnchorPos<AnchorAlign>? anchorPos,
+    AnchorPos<dynamic>? anchorPos,
   }) : anchor = Anchor.forPos(anchorPos, width, height);
 }
 
