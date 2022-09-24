@@ -31,7 +31,7 @@ class AnimatedMarker {
     this.rotateAlignment,
     this.duration = const Duration(milliseconds: 200),
     this.curve = Curves.easeInOutCirc,
-    AnchorPos<dynamic>? anchorPos,
+    AnchorPos<AnchorAlign>? anchorPos,
   }) : anchor = Anchor.forPos(anchorPos, width, height);
 }
 
@@ -113,10 +113,6 @@ class _AnimatedMarkerWidgetState extends State<_AnimatedMarkerWidget>
   late final AnimationController _controller;
   late final Animation<double> _animation;
 
-  late final _widthTween = Tween<double>(begin: 0.0, end: widget.marker.width);
-  late final _heightTween =
-      Tween<double>(begin: 0.0, end: widget.marker.height);
-
   @override
   void initState() {
     super.initState();
@@ -142,13 +138,7 @@ class _AnimatedMarkerWidgetState extends State<_AnimatedMarkerWidget>
     return UnconstrainedBox(
       child: AnimatedBuilder(
         animation: _animation,
-        builder: (context, _) {
-          return SizedBox(
-            width: _widthTween.evaluate(_animation),
-            height: _heightTween.evaluate(_animation),
-            child: widget.marker.builder(context, _animation),
-          );
-        },
+        builder: (context, _) => widget.marker.builder(context, _animation),
       ),
     );
   }

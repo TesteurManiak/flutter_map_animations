@@ -26,8 +26,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  final _markerSize = 50.0;
   final _markers = ValueNotifier<List<AnimatedMarker>>([]);
   final _center = LatLng(51.509364, -0.128928);
+
   late final AnimatedMapController _mapController;
 
   @override
@@ -113,12 +115,17 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ..add(
         AnimatedMarker(
           point: point,
-          width: 80,
-          height: 80,
+          width: _markerSize,
+          height: _markerSize,
+          anchorPos: AnchorPos.align(AnchorAlign.top),
           builder: (context, animation) {
-            return Icon(
-              Icons.push_pin,
-              size: animation.value * 80,
+            final size = _markerSize * animation.value;
+            return GestureDetector(
+              onTap: () => debugPrint('test'),
+              child: Icon(
+                Icons.push_pin,
+                size: size,
+              ),
             );
           },
         ),
