@@ -26,6 +26,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  final _markers = ValueNotifier<List<AnimatedMarker>>([]);
+  final _center = LatLng(51.509364, -0.128928);
   late final AnimatedMapController _mapController;
 
   @override
@@ -36,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    _markers.dispose();
     _mapController.dispose();
     super.dispose();
   }
@@ -43,30 +46,28 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FlutterMap(
-        mapController: _mapController,
-        options: MapOptions(
-          center: LatLng(51.509364, -0.128928),
-        ),
-        children: [
-          TileLayer(
-            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-            userAgentPackageName: 'com.example.app',
-          ),
-        ],
+      body: ValueListenableBuilder<List<AnimatedMarker>>(
+        valueListenable: _markers,
+        builder: (context, markers, _) {
+          return FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              center: _center,
+              onTap: (_, point) => _addMarker(point),
+            ),
+            children: [
+              TileLayer(
+                urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'com.example.app',
+              ),
+              AnimatedMarkerLayer(markers: markers),
+            ],
+          );
+        },
       ),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FloatingActionButton(
-            onPressed: () => _mapController.animateTo(
-              dest: LatLng(48.5, 2.2),
-              zoom: 5,
-            ),
-            tooltip: 'Animate to Paris',
-            child: const Icon(Icons.zoom_in_map),
-          ),
-          const SizedBox(height: 8),
           FloatingActionButton(
             onPressed: () => _mapController.animatedRotateFrom(90),
             tooltip: 'Rotate 90°',
@@ -80,8 +81,14 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 8),
           FloatingActionButton(
-            onPressed: _mapController.animatedRotateReset,
-            tooltip: 'Reset rotation',
+            onPressed: () {
+              _markers.value = [];
+              _mapController.animateTo(
+                dest: _center,
+                rotation: 0,
+              );
+            },
+            tooltip: 'Clear modifications',
             child: const Icon(Icons.clear_all),
           ),
           const SizedBox(height: 8),
@@ -99,5 +106,22 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         ],
       ),
     );
+  }
+
+  void _addMarker(LatLng point) {
+    _markers.value = List.from(_markers.value)
+      ..add(
+        AnimatedMarker(
+          point: point,
+          width: 80,
+          height: 80,
+          builder: (context, animation) {
+            return Icon(
+              Icons.push_pin,
+              size: animation.value * 80,
+            );
+          },
+        ),
+      );
   }
 }

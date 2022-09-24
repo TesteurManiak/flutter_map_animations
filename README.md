@@ -2,9 +2,9 @@
 
 Animation utility for flutter_map.
 
-## Usage
+## AnimatedMapController
 
-Just create an `AnimatedMapController` and you're good to go.
+Just create an `AnimatedMapController` and you're good to go:
 
 ```dart
 class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
@@ -29,7 +29,7 @@ FlutterMap(
 )
 ```
 
-## Methods
+### Methods
 
 * `animateTo({LatLng? dest, double? zoom, double? rotation})`
 * `animatedRotateFrom(double degree)`
@@ -39,3 +39,22 @@ FlutterMap(
 * `animatedZoomIn()`
 * `animatedZoomOut()`
 * `centerOnPoint(LatLng point, {double? zoom})`
+
+## AnimatedMarkerLayer & AnimatedMarker
+
+```dart
+FlutterMap(
+    mapController: _mapController,
+    options: MapOptions(
+        center: _center,
+        onTap: (_, point) => _addMarker(point),
+    ),
+    children: [
+        TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'com.example.app',
+        ),
+        AnimatedMarkerLayer(markers: markers),
+    ],
+)
+```
