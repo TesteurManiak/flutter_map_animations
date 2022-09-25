@@ -121,9 +121,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           builder: (context, animation) {
             final size = _markerSize * animation.value;
             return GestureDetector(
-              onTap: () => debugPrint('test'),
+              onTap: () => debugPrint('tapped on marker'),
               child: Icon(
-                Icons.push_pin,
+                Icons.room,
                 size: size,
               ),
             );

@@ -8,6 +8,20 @@ typedef AnimatedWidgetBuilder = Widget Function(
 );
 
 class AnimatedMarker {
+  AnimatedMarker({
+    required this.point,
+    required this.builder,
+    this.key,
+    this.width = 30.0,
+    this.height = 30.0,
+    this.rotate,
+    this.rotateOrigin,
+    this.rotateAlignment,
+    this.duration = const Duration(milliseconds: 300),
+    this.curve = Curves.ease,
+    AnchorPos<dynamic>? anchorPos,
+  }) : anchor = Anchor.forPos(anchorPos, width, height);
+
   final LatLng point;
   final AnimatedWidgetBuilder builder;
   final Key? key;
@@ -19,20 +33,6 @@ class AnimatedMarker {
   final AlignmentGeometry? rotateAlignment;
   final Duration duration;
   final Curve curve;
-
-  AnimatedMarker({
-    required this.point,
-    required this.builder,
-    this.key,
-    this.width = 30.0,
-    this.height = 30.0,
-    this.rotate,
-    this.rotateOrigin,
-    this.rotateAlignment,
-    this.duration = const Duration(milliseconds: 200),
-    this.curve = Curves.easeInOutCirc,
-    AnchorPos<dynamic>? anchorPos,
-  }) : anchor = Anchor.forPos(anchorPos, width, height);
 }
 
 class AnimatedMarkerLayer extends StatelessWidget {
@@ -136,9 +136,15 @@ class _AnimatedMarkerWidgetState extends State<_AnimatedMarkerWidget>
   @override
   Widget build(BuildContext context) {
     return UnconstrainedBox(
-      child: AnimatedBuilder(
-        animation: _animation,
-        builder: (context, _) => widget.marker.builder(context, _animation),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: widget.marker.height,
+          maxWidth: widget.marker.width,
+        ),
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, _) => widget.marker.builder(context, _animation),
+        ),
       ),
     );
   }
