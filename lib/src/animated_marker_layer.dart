@@ -36,11 +36,6 @@ class AnimatedMarker {
 }
 
 class AnimatedMarkerLayer extends StatelessWidget {
-  final List<AnimatedMarker> markers;
-  final bool rotate;
-  final Offset? rotateOrigin;
-  final AlignmentGeometry? rotateAlignment;
-
   const AnimatedMarkerLayer({
     super.key,
     this.markers = const [],
@@ -48,6 +43,11 @@ class AnimatedMarkerLayer extends StatelessWidget {
     this.rotateOrigin,
     this.rotateAlignment = Alignment.center,
   });
+
+  final List<AnimatedMarker> markers;
+  final bool rotate;
+  final Offset? rotateOrigin;
+  final AlignmentGeometry? rotateAlignment;
 
   @override
   Widget build(BuildContext context) {
@@ -98,11 +98,10 @@ class AnimatedMarkerLayer extends StatelessWidget {
 }
 
 class _AnimatedMarkerWidget extends StatefulWidget {
-  final AnimatedMarker marker;
-
   const _AnimatedMarkerWidget({
     required this.marker,
   });
+  final AnimatedMarker marker;
 
   @override
   State<_AnimatedMarkerWidget> createState() => _AnimatedMarkerWidgetState();
@@ -134,18 +133,16 @@ class _AnimatedMarkerWidgetState extends State<_AnimatedMarkerWidget>
   }
 
   @override
-  Widget build(BuildContext context) {
-    return UnconstrainedBox(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxHeight: widget.marker.height,
-          maxWidth: widget.marker.width,
+  Widget build(BuildContext context) => UnconstrainedBox(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: widget.marker.height,
+            maxWidth: widget.marker.width,
+          ),
+          child: AnimatedBuilder(
+            animation: _animation,
+            builder: (context, _) => widget.marker.builder(context, _animation),
+          ),
         ),
-        child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, _) => widget.marker.builder(context, _animation),
-        ),
-      ),
-    );
-  }
+      );
 }
