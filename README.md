@@ -59,7 +59,7 @@ FlutterMap(
         AnimatedMarkerLayer(
             markers: [
                 AnimatedMarker(
-                    point: LatLng(0, 0),
+                    point: LatLng(51.509364, -0.128928),
                     builder: (_, __) => Icon(Icons.location_on),
                 ),
             ],
