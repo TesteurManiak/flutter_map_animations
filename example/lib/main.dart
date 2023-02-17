@@ -30,13 +30,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   final _markers = ValueNotifier<List<AnimatedMarker>>([]);
   final _center = LatLng(51.509364, -0.128928);
 
-  late final AnimatedMapController _mapController;
-
-  @override
-  void initState() {
-    super.initState();
-    _mapController = AnimatedMapController(vsync: this);
-  }
+  late final _mapController = AnimatedMapController(vsync: this);
 
   @override
   void dispose() {

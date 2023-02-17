@@ -1,6 +1,6 @@
-# flutter_map_animations
+# Flutter Map Animations
 
-Animation utility for flutter_map.
+Animation utility for [flutter_map](https://pub.dev/packages/flutter_map).
 
 ## AnimatedMapController
 
@@ -8,17 +8,21 @@ Just create an `AnimatedMapController` and you're good to go:
 
 ```dart
 class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
-    late final AnimatedMapController _mapController;
+    late final _mapController = AnimatedMapController(vsync: this);
 
-    @override
-    void initState() {
-        super.initState();
-        _mapController = AnimatedMapController(vsync: this);
-    }
+    // ...
 }
 ```
 
-You can specify the animation `duration` and `curve`.
+You can specify the animation `duration` and `curve`:
+
+```dart
+AnimatedMapController(
+    vsync: this,
+    duration: const Duration(milliseconds: 500),
+    curve: Curves.easeInOut,
+);
+```
 
 And add it to your `FlutterMap` widget:
 
@@ -29,7 +33,9 @@ FlutterMap(
 )
 ```
 
-### Methods
+### Animated Movement
+
+All those methods are accessible from the `AnimatedMapController`:
 
 * `animateTo({LatLng? dest, double? zoom, double? rotation})`
 * `animatedRotateFrom(double degree)`
@@ -45,16 +51,19 @@ FlutterMap(
 ```dart
 FlutterMap(
     mapController: _mapController,
-    options: MapOptions(
-        center: _center,
-        onTap: (_, point) => _addMarker(point),
-    ),
     children: [
         TileLayer(
             urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             userAgentPackageName: 'com.example.app',
         ),
-        AnimatedMarkerLayer(markers: markers),
+        AnimatedMarkerLayer(
+            markers: [
+                AnimatedMarker(
+                    point: LatLng(0, 0),
+                    builder: (_, __) => Icon(Icons.location_on),
+                ),
+            ],
+        ),
     ],
 )
 ```
