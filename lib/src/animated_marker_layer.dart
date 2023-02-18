@@ -92,6 +92,7 @@ class _AnimatedMarkerWidget extends StatefulWidget {
   const _AnimatedMarkerWidget({
     required this.marker,
   });
+
   final AnimatedMarker marker;
 
   @override
