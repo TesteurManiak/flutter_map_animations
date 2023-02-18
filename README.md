@@ -2,6 +2,8 @@
 
 Animation utility for [flutter_map](https://pub.dev/packages/flutter_map).
 
+You can try the example app [here](https://testeurmaniak.github.io/flutter_map_animations/#/).
+
 ## AnimatedMapController
 
 Just create an `AnimatedMapController` and you're good to go:
