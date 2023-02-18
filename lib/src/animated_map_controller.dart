@@ -68,12 +68,14 @@ class AnimatedMapController extends MapControllerImpl {
   }
 
   /// Center the map on [point] with an optional [zoom] level.
-  Future<void> centerOnPoint(LatLng point, {double? zoom}) =>
-      animateTo(dest: point, zoom: zoom);
+  Future<void> centerOnPoint(LatLng point, {double? zoom}) {
+    return animateTo(dest: point, zoom: zoom);
+  }
 
   /// Apply a rotation of [degree] to the current rotation.
-  Future<void> animatedRotateFrom(double degree) =>
-      animateTo(rotation: rotation + degree);
+  Future<void> animatedRotateFrom(double degree) {
+    return animateTo(rotation: rotation + degree);
+  }
 
   /// Set the rotation to [degree].
   Future<void> animatedRotateTo(double degree) => animateTo(rotation: degree);

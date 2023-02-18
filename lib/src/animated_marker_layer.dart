@@ -124,16 +124,18 @@ class _AnimatedMarkerWidgetState extends State<_AnimatedMarkerWidget>
   }
 
   @override
-  Widget build(BuildContext context) => UnconstrainedBox(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: widget.marker.height,
-            maxWidth: widget.marker.width,
-          ),
-          child: AnimatedBuilder(
-            animation: _animation,
-            builder: (context, _) => widget.marker.builder(context, _animation),
-          ),
+  Widget build(BuildContext context) {
+    return UnconstrainedBox(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: widget.marker.height,
+          maxWidth: widget.marker.width,
         ),
-      );
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, _) => widget.marker.builder(context, _animation),
+        ),
+      ),
+    );
+  }
 }
