@@ -1,6 +1,6 @@
 name: flutter_map_animations
-description: Animation utility for flutter_map.
-version: 0.1.0
+description: Animation utility for the flutter_map package.
+version: 0.1.0+1
 homepage: https://github.com/TesteurManiak/flutter_map_animations
 repository: https://github.com/TesteurManiak/flutter_map_animations
 issue_tracker: https://github.com/TesteurManiak/flutter_map_animations/issues
