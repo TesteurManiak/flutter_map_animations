@@ -22,15 +22,50 @@ class AnimatedMarker {
     AnchorPos<dynamic>? anchorPos,
   }) : anchor = Anchor.forPos(anchorPos, width, height);
 
+  /// Coordinates of the marker
   final LatLng point;
+
+  /// Function that builds UI of the marker
   final AnimatedWidgetBuilder builder;
+
+  /// Key of the marker
   final Key? key;
+
+  /// Bounding box width of the marker
   final double width;
+
+  /// Bounding box height of the marker
   final double height;
+
   final Anchor anchor;
+
+  /// If true marker will be counter rotated to the map rotation
   final bool? rotate;
+
+  /// The origin of the coordinate system (relative to the upper left corner of
+  /// this render object) in which to apply the matrix.
+  ///
+  /// Setting an origin is equivalent to conjugating the transform matrix by a
+  /// translation. This property is provided just for convenience.
   final Offset? rotateOrigin;
+
+  /// The alignment of the origin, relative to the size of the box.
+  ///
+  /// This is equivalent to setting an origin based on the size of the box.
+  /// If it is specified at the same time as the [rotateOrigin], both are applied.
+  ///
+  /// An [AlignmentDirectional.centerStart] value is the same as an [Alignment]
+  /// whose [Alignment.x] value is `-1.0` if [Directionality.of] returns
+  /// [TextDirection.ltr], and `1.0` if [Directionality.of] returns
+  /// [TextDirection.rtl].	 Similarly [AlignmentDirectional.centerEnd] is the
+  /// same as an [Alignment] whose [Alignment.x] value is `1.0` if
+  /// [Directionality.of] returns	 [TextDirection.ltr], and `-1.0` if
+  /// [Directionality.of] returns [TextDirection.rtl].
   final AlignmentGeometry? rotateAlignment;
+
+  /// The duration of the animation.
   final Duration duration;
+
+  /// The curve of the animation.
   final Curve curve;
 }
