@@ -98,8 +98,6 @@ class AnimatedMapController extends MapControllerImpl {
   }
 
   /// Set the rotation to [degree].
-  ///
-  /// [degree] must be between 0 and 360.
   Future<void> animatedRotateTo(double degree) => animateTo(rotation: degree);
 
   /// Reset the rotation to 0.
