@@ -1,5 +1,7 @@
 # Flutter Map Animations
 
+[![Pub Version](https://img.shields.io/pub/v/flutter_map_animations)](https://pub.dev/packages/flutter_map_animations)
+
 Animation utility for [flutter_map](https://pub.dev/packages/flutter_map).
 
 You can try the example app [here](https://testeurmaniak.github.io/flutter_map_animations/#/).
