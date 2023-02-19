@@ -39,14 +39,8 @@ class AnimatedMapController extends MapControllerImpl {
   /// degrees.
   ///
   /// If specified, [zoom] must be greater or equal to 0.
-  ///
-  /// If specified, [rotation] must be between 0 and 360.
   Future<void> animateTo({LatLng? dest, double? zoom, double? rotation}) {
     assert(zoom == null || zoom >= 0, 'Zoom must be greater or equal to 0');
-    assert(
-      rotation == null || (rotation >= 0 && rotation < 360),
-      'Rotation must be between 0 and 360',
-    );
 
     final effectiveRotation = rotation ?? this.rotation;
     final latTween = Tween<double>(
