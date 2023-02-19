@@ -20,9 +20,35 @@ class AnimatedMapController extends MapControllerImpl {
   /// The curve of the animation.
   final Curve curve;
 
+  /// Current rotation of the map.
+  ///
+  /// This needs to be overridden because the rotation of the map is not
+  /// normalized to be between 0° and 360°.
+  @override
+  double get rotation {
+    var effectiveRotation = super.rotation;
+    if (effectiveRotation >= 360) {
+      effectiveRotation -= 360;
+    } else if (effectiveRotation < 0) {
+      effectiveRotation += 360;
+    }
+    return effectiveRotation;
+  }
+
   /// Animate the map to [dest] with an optional [zoom] level and [rotation] in
   /// degrees.
+  ///
+  /// If specified, [zoom] must be greater or equal to 0.
+  ///
+  /// If specified, [rotation] must be between 0 and 360.
   Future<void> animateTo({LatLng? dest, double? zoom, double? rotation}) {
+    assert(zoom == null || zoom >= 0, 'Zoom must be greater or equal to 0');
+    assert(
+      rotation == null || (rotation >= 0 && rotation < 360),
+      'Rotation must be between 0 and 360',
+    );
+
+    final effectiveRotation = rotation ?? this.rotation;
     final latTween = Tween<double>(
       begin: center.latitude,
       end: dest?.latitude ?? center.latitude,
@@ -37,7 +63,7 @@ class AnimatedMapController extends MapControllerImpl {
     );
     final rotateTween = Tween<double>(
       begin: this.rotation,
-      end: rotation ?? this.rotation,
+      end: effectiveRotation,
     );
 
     // This controller will be disposed when the animation is completed.
@@ -78,6 +104,8 @@ class AnimatedMapController extends MapControllerImpl {
   }
 
   /// Set the rotation to [degree].
+  ///
+  /// [degree] must be between 0 and 360.
   Future<void> animatedRotateTo(double degree) => animateTo(rotation: degree);
 
   /// Reset the rotation to 0.
@@ -87,8 +115,15 @@ class AnimatedMapController extends MapControllerImpl {
   Future<void> animatedZoomIn() => animateTo(zoom: zoom + 1);
 
   /// Remove one level to the current zoom level.
-  Future<void> animatedZoomOut() => animateTo(zoom: zoom - 1);
+  Future<void> animatedZoomOut() async {
+    final newZoom = zoom - 1;
+    if (newZoom < 0) return;
+
+    return animateTo(zoom: newZoom);
+  }
 
   /// Set the zoom level to [newZoom].
+  ///
+  /// [newZoom] must be greater or equal to 0.
   Future<void> animatedZoomTo(double newZoom) => animateTo(zoom: newZoom);
 }
