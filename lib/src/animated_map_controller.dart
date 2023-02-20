@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/animation.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
@@ -26,7 +28,7 @@ class AnimatedMapController extends MapControllerImpl {
   /// normalized to be between 0° and 360°.
   @override
   double get rotation {
-    var effectiveRotation = super.rotation;
+    double effectiveRotation = super.rotation;
     if (effectiveRotation >= 360) {
       effectiveRotation -= 360;
     } else if (effectiveRotation < 0) {
@@ -107,9 +109,9 @@ class AnimatedMapController extends MapControllerImpl {
   Future<void> animatedZoomIn() => animateTo(zoom: zoom + 1);
 
   /// Remove one level to the current zoom level.
-  Future<void> animatedZoomOut() async {
+  FutureOr<void> animatedZoomOut() {
     final newZoom = zoom - 1;
-    if (newZoom < 0) return;
+    if (newZoom < 0) return null;
 
     return animateTo(zoom: newZoom);
   }
