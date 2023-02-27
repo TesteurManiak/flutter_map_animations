@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/animation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -120,4 +120,31 @@ class AnimatedMapController extends MapControllerImpl {
   ///
   /// [newZoom] must be greater or equal to 0.
   Future<void> animatedZoomTo(double newZoom) => animateTo(zoom: newZoom);
+
+  /// Will use the [centerZoomFitBounds] method with [bounds] and [options] to
+  /// calculate the center and zoom level and then animate to that position.
+  ///
+  /// If [options] is not specified, it will use a default padding of 12.
+  Future<void> animatedFitBounds(
+    LatLngBounds bounds, {
+    FitBoundsOptions? options,
+  }) {
+    final localOptions =
+        options ?? const FitBoundsOptions(padding: EdgeInsets.all(12));
+    final centerZoom = centerZoomFitBounds(bounds, options: localOptions);
+    return animateTo(dest: centerZoom.center, zoom: centerZoom.zoom);
+  }
+
+  /// Will use the [LatLngBounds.fromPoints] method to calculate the bounds of
+  /// the [points] and then use the [animatedFitBounds] method to animate to
+  /// that position.
+  ///
+  /// If [options] is not specified, it will use a default padding of 12.
+  Future<void> centerOnPoints(
+    List<LatLng> points, {
+    FitBoundsOptions? options,
+  }) {
+    final bounds = LatLngBounds.fromPoints(points);
+    return animatedFitBounds(bounds, options: options);
+  }
 }

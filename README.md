@@ -49,6 +49,8 @@ All those methods are accessible from the `AnimatedMapController`:
 * `animatedZoomIn()`
 * `animatedZoomOut()`
 * `centerOnPoint(LatLng point, {double? zoom})`
+* `centerOnPoints(List<LatLng> points, {FitBoundsOptions? options})`
+* `animatedFitBounds(LatLngBounds bounds, {FitBoundsOptions? options})`
 
 ## AnimatedMarkerLayer & AnimatedMarker
 

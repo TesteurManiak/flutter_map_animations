@@ -61,21 +61,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           );
         },
       ),
-      floatingActionButton: Column(
+      floatingActionButton: SeparatedColumn(
         mainAxisSize: MainAxisSize.min,
+        separator: const SizedBox(height: 8),
         children: [
           FloatingActionButton(
             onPressed: () => _mapController.animatedRotateFrom(90),
             tooltip: 'Rotate 90°',
             child: const Icon(Icons.rotate_right),
           ),
-          const SizedBox(height: 8),
           FloatingActionButton(
             onPressed: () => _mapController.animatedRotateFrom(-90),
             tooltip: 'Rotate -90°',
             child: const Icon(Icons.rotate_left),
           ),
-          const SizedBox(height: 8),
           FloatingActionButton(
             onPressed: () {
               _markers.value = [];
@@ -87,17 +86,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             tooltip: 'Clear modifications',
             child: const Icon(Icons.clear_all),
           ),
-          const SizedBox(height: 8),
           FloatingActionButton(
             onPressed: _mapController.animatedZoomIn,
             tooltip: 'Zoom in',
             child: const Icon(Icons.zoom_in),
           ),
-          const SizedBox(height: 8),
           FloatingActionButton(
             onPressed: _mapController.animatedZoomOut,
             tooltip: 'Zoom out',
             child: const Icon(Icons.zoom_out),
+          ),
+          FloatingActionButton(
+            tooltip: 'Center on markers',
+            onPressed: () {
+              final points = _markers.value.map((m) => m.point).toList();
+              _mapController.centerOnPoints(points);
+            },
+            child: const Icon(Icons.center_focus_strong),
           ),
         ],
       ),
@@ -124,5 +129,35 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           },
         ),
       );
+  }
+}
+
+class SeparatedColumn extends StatelessWidget {
+  const SeparatedColumn({
+    super.key,
+    required this.separator,
+    this.children = const [],
+    this.mainAxisSize = MainAxisSize.max,
+  });
+
+  final Widget separator;
+  final List<Widget> children;
+  final MainAxisSize mainAxisSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: mainAxisSize,
+      children: [
+        ..._buildChildren(),
+      ],
+    );
+  }
+
+  Iterable<Widget> _buildChildren() sync* {
+    for (var i = 0; i < children.length; i++) {
+      yield children[i];
+      if (i < children.length - 1) yield separator;
+    }
   }
 }

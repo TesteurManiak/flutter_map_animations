@@ -1,3 +1,7 @@
+## 0.2.0
+
+* Added `animatedFitBounds` and `centerOnPoints` methods to `AnimatedMapController`
+
 ## 0.1.0+1
 
 * Updated `README.md` to add the pub.dev badge
