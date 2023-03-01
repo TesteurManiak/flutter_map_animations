@@ -99,6 +99,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           FloatingActionButton(
             tooltip: 'Center on markers',
             onPressed: () {
+              if (_markers.value.isEmpty) return;
+
               final points = _markers.value.map((m) => m.point).toList();
               _mapController.centerOnPoints(points);
             },
@@ -119,11 +121,15 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           anchorPos: AnchorPos.align(AnchorAlign.top),
           builder: (context, animation) {
             final size = _markerSize * animation.value;
+
             return GestureDetector(
               onTap: () => _mapController.animateTo(dest: point),
-              child: Icon(
-                Icons.room,
-                size: size,
+              child: Opacity(
+                opacity: animation.value,
+                child: Icon(
+                  Icons.room,
+                  size: size,
+                ),
               ),
             );
           },

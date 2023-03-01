@@ -41,16 +41,16 @@ FlutterMap(
 
 All those methods are accessible from the `AnimatedMapController`:
 
-* `animateTo({LatLng? dest, double? zoom, double? rotation})`
-* `animatedRotateFrom(double degree)`
-* `animatedRotateTo(double degree)`
-* `animatedRotateReset()`
-* `animatedZoomTo(double newZoom)`
-* `animatedZoomIn()`
-* `animatedZoomOut()`
-* `centerOnPoint(LatLng point, {double? zoom})`
-* `centerOnPoints(List<LatLng> points, {FitBoundsOptions? options})`
-* `animatedFitBounds(LatLngBounds bounds, {FitBoundsOptions? options})`
+* `animateTo({LatLng? dest, double? zoom, double? rotation, Curve? curve})`
+* `animatedRotateFrom(double degree, {Curve? curve})`
+* `animatedRotateTo(double degree, {Curve? curve})`
+* `animatedRotateReset({Curve? curve})`
+* `animatedZoomTo(double newZoom, {Curve? curve})`
+* `animatedZoomIn({Curve? curve})`
+* `animatedZoomOut({Curve? curve})`
+* `centerOnPoint(LatLng point, {double? zoom, Curve? curve})`
+* `centerOnPoints(List<LatLng> points, {FitBoundsOptions? options, Curve? curve})`
+* `animatedFitBounds(LatLngBounds bounds, {FitBoundsOptions? options, Curve? curve})`
 
 ## AnimatedMarkerLayer & AnimatedMarker
 

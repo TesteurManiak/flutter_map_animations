@@ -1,3 +1,8 @@
+## 0.2.1
+
+* Updated example
+* Allow to set a custom `Curve` to each of the methods of `AnimatedMapController`
+
 ## 0.2.0
 
 * Added `animatedFitBounds` and `centerOnPoints` methods to `AnimatedMapController`

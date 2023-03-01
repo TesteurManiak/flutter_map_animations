@@ -56,8 +56,24 @@ class AnimatedMapController extends MapControllerImpl {
   /// degrees.
   ///
   /// If specified, [zoom] must be greater or equal to 0.
-  Future<void> animateTo({LatLng? dest, double? zoom, double? rotation}) {
-    assert(zoom == null || zoom >= 0, 'Zoom must be greater or equal to 0');
+  ///
+  /// {@template animated_map_controller.animate_to.curve}
+  /// If [curve] is not specified, the one specified in the constructor will be
+  /// used.
+  /// {@endtemplate}
+  Future<void> animateTo({
+    LatLng? dest,
+    double? zoom,
+    double? rotation,
+    Curve? curve,
+  }) {
+    if (zoom != null && zoom < 0) {
+      throw ArgumentError.value(
+        zoom,
+        'zoom',
+        'Zoom must be greater or equal to 0',
+      );
+    }
 
     final effectiveRotation = rotation ?? this.rotation;
     final latLngTween = LatLngTween(
@@ -82,7 +98,7 @@ class AnimatedMapController extends MapControllerImpl {
 
     final animation = CurvedAnimation(
       parent: animationController,
-      curve: curve,
+      curve: curve ?? this.curve,
     )..onEnd(() {
         animationController.dispose();
         _animationController = null;
@@ -100,49 +116,81 @@ class AnimatedMapController extends MapControllerImpl {
   }
 
   /// Center the map on [point] with an optional [zoom] level.
-  Future<void> centerOnPoint(LatLng point, {double? zoom}) {
-    return animateTo(dest: point, zoom: zoom);
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
+  Future<void> centerOnPoint(LatLng point, {double? zoom, Curve? curve}) {
+    return animateTo(dest: point, zoom: zoom, curve: curve);
   }
 
   /// Apply a rotation of [degree] to the current rotation.
-  Future<void> animatedRotateFrom(double degree) {
-    return animateTo(rotation: rotation + degree);
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
+  Future<void> animatedRotateFrom(double degree, {Curve? curve}) {
+    return animateTo(rotation: rotation + degree, curve: curve);
   }
 
   /// Set the rotation to [degree].
-  Future<void> animatedRotateTo(double degree) => animateTo(rotation: degree);
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
+  Future<void> animatedRotateTo(double degree, {Curve? curve}) {
+    return animateTo(rotation: degree, curve: curve);
+  }
 
   /// Reset the rotation to 0.
-  Future<void> animatedRotateReset() => animateTo(rotation: 0);
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
+  Future<void> animatedRotateReset({Curve? curve}) {
+    return animateTo(rotation: 0, curve: curve);
+  }
 
   /// Add one level to the current zoom level.
-  Future<void> animatedZoomIn() => animateTo(zoom: zoom + 1);
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
+  Future<void> animatedZoomIn({Curve? curve}) {
+    return animateTo(zoom: zoom + 1, curve: curve);
+  }
 
   /// Remove one level to the current zoom level.
-  FutureOr<void> animatedZoomOut() {
+  ///
+  /// If the current zoom level is 0, nothing will happen.
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
+  FutureOr<void> animatedZoomOut({Curve? curve}) {
     final newZoom = zoom - 1;
     if (newZoom < 0) return null;
 
-    return animateTo(zoom: newZoom);
+    return animateTo(zoom: newZoom, curve: curve);
   }
 
   /// Set the zoom level to [newZoom].
   ///
   /// [newZoom] must be greater or equal to 0.
-  Future<void> animatedZoomTo(double newZoom) => animateTo(zoom: newZoom);
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
+  Future<void> animatedZoomTo(double newZoom, {Curve? curve}) {
+    return animateTo(zoom: newZoom, curve: curve);
+  }
 
   /// Will use the [centerZoomFitBounds] method with [bounds] and [options] to
   /// calculate the center and zoom level and then animate to that position.
   ///
   /// If [options] is not specified, it will use a default padding of 12.
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
   Future<void> animatedFitBounds(
     LatLngBounds bounds, {
     FitBoundsOptions? options,
+    Curve? curve,
   }) {
     final localOptions =
         options ?? const FitBoundsOptions(padding: EdgeInsets.all(12));
     final centerZoom = centerZoomFitBounds(bounds, options: localOptions);
-    return animateTo(dest: centerZoom.center, zoom: centerZoom.zoom);
+
+    return animateTo(
+      dest: centerZoom.center,
+      zoom: centerZoom.zoom,
+      curve: curve,
+    );
   }
 
   /// Will use the [LatLngBounds.fromPoints] method to calculate the bounds of
@@ -150,11 +198,15 @@ class AnimatedMapController extends MapControllerImpl {
   /// that position.
   ///
   /// If [options] is not specified, it will use a default padding of 12.
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
   Future<void> centerOnPoints(
     List<LatLng> points, {
     FitBoundsOptions? options,
+    Curve? curve,
   }) {
     final bounds = LatLngBounds.fromPoints(points);
-    return animatedFitBounds(bounds, options: options);
+
+    return animatedFitBounds(bounds, options: options, curve: curve);
   }
 }
