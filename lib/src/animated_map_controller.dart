@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map_animations/src/animation_extensions.dart';
+import 'package:flutter_map_animations/src/lat_lng_tween.dart';
 import 'package:latlong2/latlong.dart';
 
 /// A [MapController] that provides animated methods.
@@ -37,6 +39,19 @@ class AnimatedMapController extends MapControllerImpl {
     return effectiveRotation;
   }
 
+  /// Controller of the current animation.
+  AnimationController? _animationController;
+
+  @override
+  void dispose() {
+    final isAnimating = _animationController?.isAnimating ?? false;
+    if (isAnimating) {
+      _animationController?.stop();
+    }
+    _animationController?.dispose();
+    super.dispose();
+  }
+
   /// Animate the map to [dest] with an optional [zoom] level and [rotation] in
   /// degrees.
   ///
@@ -45,13 +60,9 @@ class AnimatedMapController extends MapControllerImpl {
     assert(zoom == null || zoom >= 0, 'Zoom must be greater or equal to 0');
 
     final effectiveRotation = rotation ?? this.rotation;
-    final latTween = Tween<double>(
-      begin: center.latitude,
-      end: dest?.latitude ?? center.latitude,
-    );
-    final lngTween = Tween<double>(
-      begin: center.longitude,
-      end: dest?.longitude ?? center.longitude,
+    final latLngTween = LatLngTween(
+      begin: center,
+      end: dest ?? center,
     );
     final zoomTween = Tween<double>(
       begin: this.zoom,
@@ -67,20 +78,19 @@ class AnimatedMapController extends MapControllerImpl {
       vsync: vsync,
       duration: duration,
     );
+    _animationController = animationController;
 
     final animation = CurvedAnimation(
       parent: animationController,
       curve: curve,
-    )..addStatusListener((status) {
-        if (status == AnimationStatus.completed ||
-            status == AnimationStatus.dismissed) {
-          animationController.dispose();
-        }
+    )..onEnd(() {
+        animationController.dispose();
+        _animationController = null;
       });
 
     animationController.addListener(() {
       move(
-        LatLng(latTween.evaluate(animation), lngTween.evaluate(animation)),
+        latLngTween.evaluate(animation),
         zoomTween.evaluate(animation),
       );
       rotate(rotateTween.evaluate(animation));
