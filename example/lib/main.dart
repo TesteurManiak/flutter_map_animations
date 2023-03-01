@@ -120,7 +120,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           builder: (context, animation) {
             final size = _markerSize * animation.value;
             return GestureDetector(
-              onTap: () => debugPrint('tapped on marker'),
+              onTap: () => _mapController.animateTo(dest: point),
               child: Icon(
                 Icons.room,
                 size: size,
