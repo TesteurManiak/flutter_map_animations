@@ -84,9 +84,22 @@ class AnimatedMapController extends MapControllerImpl {
       begin: this.zoom,
       end: zoom ?? this.zoom,
     );
+    double startRotation = this.rotation;
+    double endRotation = effectiveRotation;
+
+    // If the difference between the bearings is greater than 180 degrees,
+    // add or subtract 360 degrees to one of them to make the shortest
+    // rotation direction counterclockwise.
+    final diff = endRotation - startRotation;
+    if (diff > 180.0) {
+      startRotation += 360.0;
+    } else if (diff < -180.0) {
+      endRotation += 360.0;
+    }
+
     final rotateTween = Tween<double>(
-      begin: this.rotation,
-      end: effectiveRotation,
+      begin: startRotation,
+      end: endRotation,
     );
 
     // This controller will be disposed when the animation is completed.
