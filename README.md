@@ -77,4 +77,14 @@ FlutterMap(
 # Contributors
 
 <!-- readme: contributors -start -->
+<table>
+<tr>
+    <td align="center">
+        <a href="https://github.com/TesteurManiak">
+            <img src="https://avatars.githubusercontent.com/u/14369698?v=4" width="100;" alt="TesteurManiak"/>
+            <br />
+            <sub><b>Guillaume Roux</b></sub>
+        </a>
+    </td></tr>
+</table>
 <!-- readme: contributors -end -->
