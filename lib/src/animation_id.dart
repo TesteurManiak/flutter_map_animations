@@ -72,5 +72,20 @@ class AnimationId {
 enum AnimatedMoveId {
   started,
   inProgress,
-  finished,
+  finished;
+
+  static AnimatedMoveId fromAnimationAndTriggeredMove({
+    required double animationValue,
+    required bool hasTriggeredMove,
+  }) {
+    final AnimatedMoveId moveId;
+    if (animationValue == 1) {
+      moveId = AnimatedMoveId.finished;
+    } else if (!hasTriggeredMove) {
+      moveId = AnimatedMoveId.started;
+    } else {
+      moveId = AnimatedMoveId.inProgress;
+    }
+    return moveId;
+  }
 }

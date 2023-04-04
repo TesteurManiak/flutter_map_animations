@@ -128,16 +128,12 @@ class AnimatedMapController extends MapControllerImpl {
     bool hasTriggeredMove = false;
 
     animationController.addListener(() {
-      final AnimatedMoveId moveId;
-      if (animation.value == 1) {
-        moveId = AnimatedMoveId.finished;
-      } else if (!hasTriggeredMove) {
-        moveId = AnimatedMoveId.started;
-      } else {
-        moveId = AnimatedMoveId.inProgress;
-      }
-
-      animationId = animationId.copyWith(moveId: moveId);
+      animationId = animationId.copyWith(
+        moveId: AnimatedMoveId.fromAnimationAndTriggeredMove(
+          animationValue: animation.value,
+          hasTriggeredMove: hasTriggeredMove,
+        ),
+      );
 
       hasTriggeredMove |= move(
             latLngTween.evaluate(animation),
