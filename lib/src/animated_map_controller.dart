@@ -136,14 +136,11 @@ class AnimatedMapController extends MapControllerImpl {
       );
 
       hasTriggeredMove |= move(
-            latLngTween.evaluate(animation),
-            zoomTween.evaluate(animation),
-            id: animationId.id,
-          ) ||
-          rotate(
-            rotateTween.evaluate(animation),
-            id: animationId.id,
-          );
+        latLngTween.evaluate(animation),
+        zoomTween.evaluate(animation),
+        id: animationId.id,
+      );
+      rotate(rotateTween.evaluate(animation));
     });
 
     return animationController.forward();
