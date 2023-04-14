@@ -1,6 +1,6 @@
 # Flutter Map Animations
 
-[![Pub Version](https://img.shields.io/pub/v/flutter_map_animations)](https://pub.dev/packages/flutter_map_animations)
+[![Pub Version (including pre-releases)](https://img.shields.io/pub/v/flutter_map_animations?include_prereleases)](https://pub.dev/packages/flutter_map_animations)
 
 Animation utility for the [flutter_map](https://pub.dev/packages/flutter_map) package.
 
