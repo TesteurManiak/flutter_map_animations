@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_animations/src/animation_extensions.dart';
+import 'package:flutter_map_animations/src/animation_id.dart';
 import 'package:flutter_map_animations/src/lat_lng_tween.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -75,14 +76,16 @@ class AnimatedMapController extends MapControllerImpl {
       );
     }
 
+    final effectiveDest = dest ?? center;
+    final effectiveZoom = zoom ?? this.zoom;
     final effectiveRotation = rotation ?? this.rotation;
     final latLngTween = LatLngTween(
       begin: center,
-      end: dest ?? center,
+      end: effectiveDest,
     );
     final zoomTween = Tween<double>(
       begin: this.zoom,
-      end: zoom ?? this.zoom,
+      end: effectiveZoom,
     );
     double startRotation = this.rotation;
     double endRotation = effectiveRotation;
@@ -117,10 +120,25 @@ class AnimatedMapController extends MapControllerImpl {
         _animationController = null;
       });
 
+    AnimationId animationId = AnimationId(
+      destLocation: effectiveDest,
+      destZoom: effectiveZoom,
+    );
+
+    bool hasTriggeredMove = false;
+
     animationController.addListener(() {
-      move(
+      animationId = animationId.copyWith(
+        moveId: AnimatedMoveId.fromAnimationAndTriggeredMove(
+          animationValue: animation.value,
+          hasTriggeredMove: hasTriggeredMove,
+        ),
+      );
+
+      hasTriggeredMove |= move(
         latLngTween.evaluate(animation),
         zoomTween.evaluate(animation),
+        id: animationId.id,
       );
       rotate(rotateTween.evaluate(animation));
     });

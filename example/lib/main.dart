@@ -55,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.example.app',
+                tileUpdateTransformer: _animatedMoveTileUpdateTransformer,
               ),
               AnimatedMarkerLayer(markers: markers),
             ],
@@ -167,3 +168,31 @@ class SeparatedColumn extends StatelessWidget {
     }
   }
 }
+
+final _animatedMoveTileUpdateTransformer =
+    TileUpdateTransformer.fromHandlers(handleData: (updateEvent, sink) {
+  final mapEvent = updateEvent.mapEvent;
+
+  final id =
+      mapEvent is MapEventMove ? AnimationId.tryParse(mapEvent.id) : null;
+  if (id != null && id.moveId == AnimatedMoveId.started) {
+    // When animated movement starts load tiles at the target location and do
+    // not prune. Disabling pruning means existing tiles will remain visible
+    // whilst animating.
+    sink.add(
+      updateEvent.loadOnly(
+        loadCenterOverride: id.destLocation,
+        loadZoomOverride: id.destZoom,
+      ),
+    );
+  } else if (id?.moveId == AnimatedMoveId.inProgress) {
+    // Do not prune or load whilst animating so that any existing tiles remain
+    // visible. A smarter implementation may start pruning once we are close to
+    // the target zoom/location.
+  } else if (id?.moveId == AnimatedMoveId.finished) {
+    // We already prefetched the tiles when animation started so just prune.
+    sink.add(updateEvent.pruneOnly());
+  } else {
+    sink.add(updateEvent);
+  }
+});
