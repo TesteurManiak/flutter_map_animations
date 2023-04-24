@@ -169,6 +169,7 @@ class SeparatedColumn extends StatelessWidget {
   }
 }
 
+/// Inspired by the contribution of [rorystephenson](https://github.com/fleaflet/flutter_map/pull/1475/files#diff-b663bf9f32e20dbe004bd1b58a53408aa4d0c28bcc29940156beb3f34e364556)
 final _animatedMoveTileUpdateTransformer =
     TileUpdateTransformer.fromHandlers(handleData: (updateEvent, sink) {
   final mapEvent = updateEvent.mapEvent;
@@ -176,9 +177,6 @@ final _animatedMoveTileUpdateTransformer =
   final id =
       mapEvent is MapEventMove ? AnimationId.tryParse(mapEvent.id) : null;
   if (id != null && id.moveId == AnimatedMoveId.started) {
-    // When animated movement starts load tiles at the target location and do
-    // not prune. Disabling pruning means existing tiles will remain visible
-    // whilst animating.
     sink.add(
       updateEvent.loadOnly(
         loadCenterOverride: id.destLocation,
@@ -186,11 +184,7 @@ final _animatedMoveTileUpdateTransformer =
       ),
     );
   } else if (id?.moveId == AnimatedMoveId.inProgress) {
-    // Do not prune or load whilst animating so that any existing tiles remain
-    // visible. A smarter implementation may start pruning once we are close to
-    // the target zoom/location.
   } else if (id?.moveId == AnimatedMoveId.finished) {
-    // We already prefetched the tiles when animation started so just prune.
     sink.add(updateEvent.pruneOnly());
   } else {
     sink.add(updateEvent);

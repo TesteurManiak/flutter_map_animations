@@ -9,6 +9,12 @@ class AnimationId {
     required this.destZoom,
   });
 
+  /// Parse the [id] into an [AnimationId] object.
+  ///
+  /// It expects the [id] to be in the format of:
+  /// ```dart
+  /// "moveId#latitude,longitude,destZoom"
+  /// ```
   factory AnimationId.parse(String id) {
     final parts = id.split('#');
     final moveId = AnimatedMoveId.values.byName(parts[0]);
@@ -24,6 +30,9 @@ class AnimationId {
     );
   }
 
+  /// Try to parse the [id] into an [AnimationId] object.
+  ///
+  /// If the [id] is null or cannot be parsed, it will return null.
   static AnimationId? tryParse(String? id) {
     if (id == null) return null;
 
