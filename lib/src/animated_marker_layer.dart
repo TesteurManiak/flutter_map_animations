@@ -101,26 +101,26 @@ class _AnimatedMarkerWidget extends StatefulWidget {
 
 class _AnimatedMarkerWidgetState extends State<_AnimatedMarkerWidget>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _animation;
+  late final AnimationController controller;
+  late final Animation<double> animation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
+    controller = AnimationController(
       vsync: this,
       duration: widget.marker.duration,
     )..forward();
 
-    _animation = CurvedAnimation(
-      parent: _controller,
+    animation = CurvedAnimation(
+      parent: controller,
       curve: widget.marker.curve,
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    controller.dispose();
     super.dispose();
   }
 
@@ -133,8 +133,8 @@ class _AnimatedMarkerWidgetState extends State<_AnimatedMarkerWidget>
           maxWidth: widget.marker.width,
         ),
         child: AnimatedBuilder(
-          animation: _animation,
-          builder: (context, _) => widget.marker.builder(context, _animation),
+          animation: animation,
+          builder: (context, _) => widget.marker.builder(context, animation),
         ),
       ),
     );
