@@ -1,3 +1,7 @@
+## 0.3.0
+
+* Updated to [flutter_map](https://pub.dev/packages/flutter_map/versions/4.0.0) v4
+
 ## 0.3.0-dev.2
 
 * Added `AnimationId` class to manage a `TileUpdateTransformer`
