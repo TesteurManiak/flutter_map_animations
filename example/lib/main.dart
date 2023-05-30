@@ -26,9 +26,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+  static const _useTransformerId = 'useTransformerId';
   final _markerSize = 50.0;
   final _markers = ValueNotifier<List<AnimatedMarker>>([]);
   final _center = LatLng(51.509364, -0.128928);
+  bool _useTransformer = true;
 
   late final _mapController = AnimatedMapController(vsync: this);
 
@@ -64,15 +66,22 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
       floatingActionButton: SeparatedColumn(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.end,
         separator: const SizedBox(height: 8),
         children: [
           FloatingActionButton(
-            onPressed: () => _mapController.animatedRotateFrom(90),
+            onPressed: () => _mapController.animatedRotateFrom(
+              90,
+              customId: _useTransformer ? _useTransformerId : null,
+            ),
             tooltip: 'Rotate 90°',
             child: const Icon(Icons.rotate_right),
           ),
           FloatingActionButton(
-            onPressed: () => _mapController.animatedRotateFrom(-90),
+            onPressed: () => _mapController.animatedRotateFrom(
+              -90,
+              customId: _useTransformer ? _useTransformerId : null,
+            ),
             tooltip: 'Rotate -90°',
             child: const Icon(Icons.rotate_left),
           ),
@@ -82,18 +91,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               _mapController.animateTo(
                 dest: _center,
                 rotation: 0,
+                customId: _useTransformer ? _useTransformerId : null,
               );
             },
             tooltip: 'Clear modifications',
             child: const Icon(Icons.clear_all),
           ),
           FloatingActionButton(
-            onPressed: _mapController.animatedZoomIn,
+            onPressed: () => _mapController.animatedZoomIn(
+              customId: _useTransformer ? _useTransformerId : null,
+            ),
             tooltip: 'Zoom in',
             child: const Icon(Icons.zoom_in),
           ),
           FloatingActionButton(
-            onPressed: _mapController.animatedZoomOut,
+            onPressed: () => _mapController.animatedZoomOut(
+              customId: _useTransformer ? _useTransformerId : null,
+            ),
             tooltip: 'Zoom out',
             child: const Icon(Icons.zoom_out),
           ),
@@ -103,9 +117,34 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               if (_markers.value.isEmpty) return;
 
               final points = _markers.value.map((m) => m.point).toList();
-              _mapController.centerOnPoints(points);
+              _mapController.centerOnPoints(
+                points,
+                customId: _useTransformer ? _useTransformerId : null,
+              );
             },
             child: const Icon(Icons.center_focus_strong),
+          ),
+          FloatingActionButton.extended(
+            label: Row(
+              children: [
+                const Text('Transformer'),
+                Switch(
+                  activeColor: Colors.blue.shade200,
+                  activeTrackColor: Colors.black38,
+                  value: _useTransformer,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _useTransformer = newValue;
+                    });
+                  },
+                ),
+              ],
+            ),
+            onPressed: () {
+              setState(() {
+                _useTransformer = !_useTransformer;
+              });
+            },
           ),
         ],
       ),
@@ -124,7 +163,10 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             final size = _markerSize * animation.value;
 
             return GestureDetector(
-              onTap: () => _mapController.animateTo(dest: point),
+              onTap: () => _mapController.animateTo(
+                dest: point,
+                customId: _useTransformer ? _useTransformerId : null,
+              ),
               child: Opacity(
                 opacity: animation.value,
                 child: Icon(
@@ -145,16 +187,19 @@ class SeparatedColumn extends StatelessWidget {
     required this.separator,
     this.children = const [],
     this.mainAxisSize = MainAxisSize.max,
+    this.crossAxisAlignment = CrossAxisAlignment.start,
   });
 
   final Widget separator;
   final List<Widget> children;
   final MainAxisSize mainAxisSize;
+  final CrossAxisAlignment crossAxisAlignment;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: mainAxisSize,
+      crossAxisAlignment: crossAxisAlignment,
       children: [
         ..._buildChildren(),
       ],
@@ -170,23 +215,35 @@ class SeparatedColumn extends StatelessWidget {
 }
 
 /// Inspired by the contribution of [rorystephenson](https://github.com/fleaflet/flutter_map/pull/1475/files#diff-b663bf9f32e20dbe004bd1b58a53408aa4d0c28bcc29940156beb3f34e364556)
-final _animatedMoveTileUpdateTransformer =
-    TileUpdateTransformer.fromHandlers(handleData: (updateEvent, sink) {
-  final mapEvent = updateEvent.mapEvent;
+final _animatedMoveTileUpdateTransformer = TileUpdateTransformer.fromHandlers(
+  handleData: (updateEvent, sink) {
+    final id = AnimationId.fromMapEvent(updateEvent.mapEvent);
 
-  final id =
-      mapEvent is MapEventMove ? AnimationId.tryParse(mapEvent.id) : null;
-  if (id != null && id.moveId == AnimatedMoveId.started) {
-    sink.add(
-      updateEvent.loadOnly(
-        loadCenterOverride: id.destLocation,
-        loadZoomOverride: id.destZoom,
-      ),
-    );
-  } else if (id?.moveId == AnimatedMoveId.inProgress) {
-  } else if (id?.moveId == AnimatedMoveId.finished) {
-    sink.add(updateEvent.pruneOnly());
-  } else {
-    sink.add(updateEvent);
-  }
-});
+    if (id == null) return sink.add(updateEvent);
+    if (id.customId != _MyHomePageState._useTransformerId) {
+      if (id.moveId == AnimatedMoveId.started) {
+        debugPrint('TileUpdateTransformer disabled, using default behaviour.');
+      }
+      return sink.add(updateEvent);
+    }
+
+    switch (id.moveId) {
+      case AnimatedMoveId.started:
+        debugPrint('Loading tiles at animation destination.');
+        sink.add(
+          updateEvent.loadOnly(
+            loadCenterOverride: id.destLocation,
+            loadZoomOverride: id.destZoom,
+          ),
+        );
+        break;
+      case AnimatedMoveId.inProgress:
+        // Do not prune or load during movement.
+        break;
+      case AnimatedMoveId.finished:
+        debugPrint('Pruning tiles after animated movement.');
+        sink.add(updateEvent.pruneOnly());
+        break;
+    }
+  },
+);
