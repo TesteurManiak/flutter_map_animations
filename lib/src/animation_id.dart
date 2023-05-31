@@ -43,8 +43,7 @@ class AnimationId {
     try {
       final animationId = AnimationId.parse(id);
       return animationId;
-    } catch (e, s) {
-      debugPrintStack(label: e.toString(), stackTrace: s);
+    } catch (e) {
       return null;
     }
   }

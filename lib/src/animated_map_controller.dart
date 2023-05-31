@@ -7,6 +7,14 @@ import 'package:flutter_map_animations/src/animation_id.dart';
 import 'package:flutter_map_animations/src/lat_lng_tween.dart';
 import 'package:latlong2/latlong.dart';
 
+typedef _MovementCallback = bool Function(
+  CurvedAnimation animation,
+  LatLngTween latLngTween,
+  Tween<double> zoomTween,
+  Tween<double> rotateTween,
+  AnimationId animationId,
+);
+
 /// A [MapController] that provides animated methods.
 class AnimatedMapController extends MapControllerImpl {
   /// Creates a [MapController] that provides animated methods.
@@ -170,13 +178,7 @@ class AnimatedMapController extends MapControllerImpl {
   // Determine what MapController method should be called based on whether
   // there is movement and/or rotation. If there is neither movement nor
   // rotation null is returned.
-  bool Function(
-    CurvedAnimation animation,
-    LatLngTween latLngTween,
-    Tween<double> zoomTween,
-    Tween<double> rotateTween,
-    AnimationId animationId,
-  )? _movementCallback({
+  _MovementCallback? _movementCallback({
     required bool hasMovement,
     required bool hasRotation,
   }) {
