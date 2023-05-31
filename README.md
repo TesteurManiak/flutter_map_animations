@@ -85,6 +85,13 @@ FlutterMap(
             <br />
             <sub><b>Guillaume Roux</b></sub>
         </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/rorystephenson">
+            <img src="https://avatars.githubusercontent.com/u/3683599?v=4" width="100;" alt="rorystephenson"/>
+            <br />
+            <sub><b>Rory Stephenson</b></sub>
+        </a>
     </td></tr>
 </table>
 <!-- readme: contributors -end -->
