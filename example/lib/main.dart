@@ -29,7 +29,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   static const _useTransformerId = 'useTransformerId';
   final _markerSize = 50.0;
   final _markers = ValueNotifier<List<AnimatedMarker>>([]);
-  final _center = LatLng(51.509364, -0.128928);
+  final _center = const LatLng(51.509364, -0.128928);
   bool _useTransformer = true;
 
   late final _mapController = AnimatedMapController(vsync: this);
