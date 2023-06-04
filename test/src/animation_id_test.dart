@@ -11,7 +11,7 @@ void main() {
 
     group('id', () {
       test('should return a formatted string', () {
-        final animationId = AnimationId(
+        const animationId = AnimationId(
           destLocation: LatLng(51, 0),
           destZoom: 1,
         );
@@ -62,7 +62,7 @@ void main() {
     group('fromMapEvent', () {
       test('should return an AnimationId', () {
         final animationId = AnimationId.fromMapEvent(
-          MapEventMove(
+          const MapEventMove(
             center: LatLng(1, 2),
             zoom: 6,
             targetCenter: LatLng(2, 4),
@@ -77,7 +77,7 @@ void main() {
 
       test('should return null if the MapEvent is not a MapEventMove', () {
         final animationId = AnimationId.fromMapEvent(
-          MapEventTap(
+          const MapEventTap(
             center: LatLng(1, 2),
             zoom: 6,
             source: MapEventSource.custom,

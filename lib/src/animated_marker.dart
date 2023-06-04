@@ -19,8 +19,8 @@ class AnimatedMarker {
     this.rotateAlignment,
     this.duration = const Duration(milliseconds: 300),
     this.curve = Curves.ease,
-    AnchorPos<dynamic>? anchorPos,
-  }) : anchor = Anchor.forPos(anchorPos, width, height);
+    this.anchorPos,
+  });
 
   /// Coordinates of the marker
   final LatLng point;
@@ -37,7 +37,15 @@ class AnimatedMarker {
   /// Bounding box height of the marker
   final double height;
 
-  final Anchor anchor;
+  /// {@template animated_marker_anchor_pos}
+  /// Positioning of the [AnimatedMarker.builder] widget relative to the center
+  /// of its bounding box defined by its [AnimatedMarker.height] &
+  /// [AnimatedMarker.width]
+  ///
+  /// Overriden on a per [AnimatedMarker] basis if [AnimatedMarker.anchorPos] is
+  /// specified.
+  /// {@endtemplate}
+  final AnchorPos? anchorPos;
 
   /// If true marker will be counter rotated to the map rotation
   final bool? rotate;

@@ -6,12 +6,16 @@ class AnimatedMarkerLayer extends StatelessWidget {
   const AnimatedMarkerLayer({
     super.key,
     this.markers = const [],
+    this.anchorPos,
     this.rotate = false,
     this.rotateOrigin,
     this.rotateAlignment = Alignment.center,
   });
 
   final List<AnimatedMarker> markers;
+
+  /// {@macro animated_marker_anchor_pos}
+  final AnchorPos? anchorPos;
 
   /// If true markers will be counter rotated to the map rotation.
   final bool rotate;
@@ -46,10 +50,21 @@ class AnimatedMarkerLayer extends StatelessWidget {
     for (final marker in markers) {
       final pxPoint = map.project(marker.point);
 
-      final rightPortion = marker.width - marker.anchor.left;
-      final leftPortion = marker.anchor.left;
-      final bottomPortion = marker.height - marker.anchor.top;
-      final topPortion = marker.anchor.top;
+      // See if any portion of the Marker rect resides in the map bounds
+      // If not, don't spend any resources on build function.
+      // This calculation works for any Anchor position whithin the Marker
+      // Note that Anchor coordinates of (0,0) are at bottom-right of the Marker
+      // unlike the map coordinates.
+      final anchor = Anchor.fromPos(
+        marker.anchorPos ?? anchorPos ?? AnchorPos.align(AnchorAlign.center),
+        marker.width,
+        marker.height,
+      );
+
+      final rightPortion = marker.width - anchor.left;
+      final leftPortion = anchor.left;
+      final bottomPortion = marker.height - anchor.top;
+      final topPortion = anchor.top;
 
       final sw = CustomPoint(
         pxPoint.x + leftPortion,

@@ -15,17 +15,33 @@ typedef _MovementCallback = bool Function(
   AnimationId animationId,
 );
 
-/// A [MapController] that provides animated methods.
-class AnimatedMapController extends MapControllerImpl {
+/// A wrap around [MapController] that provides animated methods.
+class AnimatedMapController {
   /// Creates a [MapController] that provides animated methods.
   AnimatedMapController({
     required this.vsync,
+    MapController? mapController,
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.fastOutSlowIn,
-  });
+  })  : mapController = mapController ?? MapController(),
+        _internal = mapController == null;
 
   /// The vsync of the animation.
   final TickerProvider vsync;
+
+  /// Implementation of the map controller that will be used to trigger
+  /// movements.
+  ///
+  /// Defaults to a new [MapController] which should be a [MapControllerImpl].
+  ///
+  /// If created internally (i.e. not passed as a parameter), it will be
+  /// disposed when [dispose] is called.
+  final MapController mapController;
+
+  /// Whether the map controller was created internally or passed as a
+  /// parameter. Used to know if the map controller should be disposed or not
+  /// by the animated map controller.
+  final bool _internal;
 
   /// The duration of the animation.
   final Duration duration;
@@ -34,12 +50,8 @@ class AnimatedMapController extends MapControllerImpl {
   final Curve curve;
 
   /// Current rotation of the map.
-  ///
-  /// This needs to be overridden because the rotation of the map is not
-  /// normalized to be between 0° and 360°.
-  @override
   double get rotation {
-    double effectiveRotation = super.rotation;
+    double effectiveRotation = mapController.rotation;
     if (effectiveRotation >= 360) {
       effectiveRotation -= 360;
     } else if (effectiveRotation < 0) {
@@ -51,14 +63,17 @@ class AnimatedMapController extends MapControllerImpl {
   /// Controller of the current animation.
   AnimationController? _animationController;
 
-  @override
   void dispose() {
     final isAnimating = _animationController?.isAnimating ?? false;
     if (isAnimating) {
       _animationController?.stop();
     }
     _animationController?.dispose();
-    super.dispose();
+
+    // Dispose the map controller if it was created internally.
+    if (_internal) {
+      mapController.dispose();
+    }
   }
 
   /// Animate the map to [dest] with an optional [zoom] level and [rotation] in
@@ -85,15 +100,15 @@ class AnimatedMapController extends MapControllerImpl {
       );
     }
 
-    final effectiveDest = dest ?? center;
-    final effectiveZoom = zoom ?? this.zoom;
+    final effectiveDest = dest ?? mapController.center;
+    final effectiveZoom = zoom ?? mapController.zoom;
     final effectiveRotation = rotation ?? this.rotation;
     final latLngTween = LatLngTween(
-      begin: center,
+      begin: mapController.center,
       end: effectiveDest,
     );
     final zoomTween = Tween<double>(
-      begin: this.zoom,
+      begin: mapController.zoom,
       end: effectiveZoom,
     );
     double startRotation = this.rotation;
@@ -117,8 +132,8 @@ class AnimatedMapController extends MapControllerImpl {
     // Determine the callback for movement. If no movement will occur return
     // immediately.
     final bool hasRotation = rotation != null && rotation != this.rotation;
-    final bool hasMovement =
-        (dest != null && dest != center) || (zoom != null && zoom != this.zoom);
+    final bool hasMovement = (dest != null && dest != mapController.center) ||
+        (zoom != null && zoom != mapController.zoom);
     final movementCallback =
         _movementCallback(hasMovement: hasMovement, hasRotation: hasRotation);
     if (movementCallback == null) return Future.value();
@@ -184,7 +199,7 @@ class AnimatedMapController extends MapControllerImpl {
   }) {
     if (hasMovement && hasRotation) {
       return (animation, latLngTween, zoomTween, rotateTween, animationId) {
-        final result = moveAndRotate(
+        final result = mapController.moveAndRotate(
           latLngTween.evaluate(animation),
           zoomTween.evaluate(animation),
           rotateTween.evaluate(animation),
@@ -194,14 +209,14 @@ class AnimatedMapController extends MapControllerImpl {
       };
     } else if (hasMovement) {
       return (animation, latLngTween, zoomTween, rotateTween, animationId) =>
-          move(
+          mapController.move(
             latLngTween.evaluate(animation),
             zoomTween.evaluate(animation),
             id: animationId.id,
           );
     } else if (hasRotation) {
       return (animation, latLngTween, zoomTween, rotateTween, animationId) =>
-          rotate(
+          mapController.rotate(
             rotateTween.evaluate(animation),
             id: animationId.id,
           );
@@ -259,7 +274,11 @@ class AnimatedMapController extends MapControllerImpl {
   ///
   /// {@macro animated_map_controller.animate_to.curve}
   Future<void> animatedZoomIn({Curve? curve, String? customId}) {
-    return animateTo(zoom: zoom + 1, curve: curve, customId: customId);
+    return animateTo(
+      zoom: mapController.zoom + 1,
+      curve: curve,
+      customId: customId,
+    );
   }
 
   /// Remove one level to the current zoom level.
@@ -268,7 +287,7 @@ class AnimatedMapController extends MapControllerImpl {
   ///
   /// {@macro animated_map_controller.animate_to.curve}
   FutureOr<void> animatedZoomOut({Curve? curve, String? customId}) {
-    final newZoom = zoom - 1;
+    final newZoom = mapController.zoom - 1;
     if (newZoom < 0) return null;
 
     return animateTo(zoom: newZoom, curve: curve, customId: customId);
@@ -301,7 +320,10 @@ class AnimatedMapController extends MapControllerImpl {
   }) {
     final localOptions =
         options ?? const FitBoundsOptions(padding: EdgeInsets.all(12));
-    final centerZoom = centerZoomFitBounds(bounds, options: localOptions);
+    final centerZoom = mapController.centerZoomFitBounds(
+      bounds,
+      options: localOptions,
+    );
 
     return animateTo(
       dest: centerZoom.center,
