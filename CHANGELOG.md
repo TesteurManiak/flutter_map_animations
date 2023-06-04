@@ -1,3 +1,10 @@
+## 0.4.0
+
+**Check the [Migration Guide](https://github.com/TesteurManiak/flutter_map_animations#v040) to learn about breaking changes in this version**
+
+* Updated to [flutter_map](https://pub.dev/packages/flutter_map/versions/5.0.0) v5
+* Updated Dart SDK constraints to `>=3.0.0 <4.0.0`
+
 ## 0.3.0
 
 * Updated to [flutter_map](https://pub.dev/packages/flutter_map/versions/4.0.0) v4
