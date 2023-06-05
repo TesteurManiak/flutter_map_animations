@@ -44,7 +44,11 @@ class AnimatedMarkerLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final map = FlutterMapState.maybeOf(context)!;
+    final map = FlutterMapState.maybeOf(context);
+    if (map == null) {
+      throw StateError('No FlutterMapState found.');
+    }
+
     final markerWidgets = <Widget>[];
 
     for (final marker in markers) {
