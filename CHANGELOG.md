@@ -1,3 +1,7 @@
+## 0.4.1
+
+* Fixed topics in `pubspec.yaml`
+
 ## 0.4.0
 
 **Check the [Migration Guide](https://github.com/TesteurManiak/flutter_map_animations#v040) to learn about breaking changes in this version**
