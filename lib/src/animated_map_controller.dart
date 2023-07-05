@@ -100,8 +100,9 @@ class AnimatedMapController {
       );
     }
 
-    final effectiveDest = dest ?? mapController.camera.center;
-    final effectiveZoom = zoom ?? mapController.camera.zoom;
+    final camera = mapController.camera;
+    final effectiveDest = dest ?? camera.center;
+    final effectiveZoom = zoom ?? camera.zoom;
     final effectiveRotation = rotation ?? this.rotation;
     final latLngTween = LatLngTween(
       begin: mapController.camera.center,
