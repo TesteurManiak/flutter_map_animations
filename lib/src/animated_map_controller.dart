@@ -51,7 +51,7 @@ class AnimatedMapController {
 
   /// Current rotation of the map.
   double get rotation {
-    double effectiveRotation = mapController.rotation;
+    double effectiveRotation = mapController.camera.rotation;
     if (effectiveRotation >= 360) {
       effectiveRotation -= 360;
     } else if (effectiveRotation < 0) {
@@ -100,15 +100,15 @@ class AnimatedMapController {
       );
     }
 
-    final effectiveDest = dest ?? mapController.center;
-    final effectiveZoom = zoom ?? mapController.zoom;
+    final effectiveDest = dest ?? mapController.camera.center;
+    final effectiveZoom = zoom ?? mapController.camera.zoom;
     final effectiveRotation = rotation ?? this.rotation;
     final latLngTween = LatLngTween(
-      begin: mapController.center,
+      begin: mapController.camera.center,
       end: effectiveDest,
     );
     final zoomTween = Tween<double>(
-      begin: mapController.zoom,
+      begin: mapController.camera.zoom,
       end: effectiveZoom,
     );
     double startRotation = this.rotation;
@@ -132,8 +132,9 @@ class AnimatedMapController {
     // Determine the callback for movement. If no movement will occur return
     // immediately.
     final bool hasRotation = rotation != null && rotation != this.rotation;
-    final bool hasMovement = (dest != null && dest != mapController.center) ||
-        (zoom != null && zoom != mapController.zoom);
+    final bool hasMovement =
+        (dest != null && dest != mapController.camera.center) ||
+            (zoom != null && zoom != mapController.camera.zoom);
     final movementCallback =
         _movementCallback(hasMovement: hasMovement, hasRotation: hasRotation);
     if (movementCallback == null) return Future.value();
@@ -275,7 +276,7 @@ class AnimatedMapController {
   /// {@macro animated_map_controller.animate_to.curve}
   Future<void> animatedZoomIn({Curve? curve, String? customId}) {
     return animateTo(
-      zoom: mapController.zoom + 1,
+      zoom: mapController.camera.zoom + 1,
       curve: curve,
       customId: customId,
     );
@@ -287,7 +288,7 @@ class AnimatedMapController {
   ///
   /// {@macro animated_map_controller.animate_to.curve}
   FutureOr<void> animatedZoomOut({Curve? curve, String? customId}) {
-    final newZoom = mapController.zoom - 1;
+    final newZoom = mapController.camera.zoom - 1;
     if (newZoom < 0) return null;
 
     return animateTo(zoom: newZoom, curve: curve, customId: customId);
@@ -306,24 +307,44 @@ class AnimatedMapController {
     return animateTo(zoom: newZoom, curve: curve, customId: customId);
   }
 
-  /// Will use the [centerZoomFitBounds] method with [bounds] and [options] to
-  /// calculate the center and zoom level and then animate to that position.
-  ///
-  /// If [options] is not specified, it will use a default padding of 12.
-  ///
-  /// {@macro animated_map_controller.animate_to.curve}
+  @Deprecated(
+    'Prefer `animatedFitCamera` with a `CameraFit.bounds()` instead. '
+    'This method will be removed in a future release as it is now redundant. '
+    'This method is deprecated since v0.5.0',
+  )
   Future<void> animatedFitBounds(
     LatLngBounds bounds, {
     FitBoundsOptions? options,
     Curve? curve,
     String? customId,
   }) {
-    final localOptions =
-        options ?? const FitBoundsOptions(padding: EdgeInsets.all(12));
-    final centerZoom = mapController.centerZoomFitBounds(
-      bounds,
-      options: localOptions,
+    final cameraFit = options == null
+        ? CameraFit.bounds(bounds: bounds)
+        : CameraFit.bounds(
+            bounds: bounds,
+            padding: options.padding,
+            maxZoom: options.maxZoom,
+            forceIntegerZoomLevel: options.forceIntegerZoomLevel,
+          );
+    return animatedFitCamera(
+      cameraFit: cameraFit,
+      curve: curve,
+      customId: customId,
     );
+  }
+
+  /// Will use the [cameraFit] to calculate the center and zoom level and then
+  /// animate to that position.
+  ///
+  /// If [options] is not specified, it will use a default padding of 12.
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
+  Future<void> animatedFitCamera({
+    required CameraFit cameraFit,
+    Curve? curve,
+    String? customId,
+  }) {
+    final centerZoom = cameraFit.fit(mapController.camera);
 
     return animateTo(
       dest: centerZoom.center,
@@ -334,23 +355,29 @@ class AnimatedMapController {
   }
 
   /// Will use the [LatLngBounds.fromPoints] method to calculate the bounds of
-  /// the [points] and then use the [animatedFitBounds] method to animate to
+  /// the [points] and then use the [animatedFitCamera] method to animate to
   /// that position.
   ///
   /// If [options] is not specified, it will use a default padding of 12.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
+  @Deprecated(
+    'Prefer `animatedFitCamera` with a `CameraFit.coordiantes() or CameraFit.bounds()` instead. '
+    'This method will be removed in a future release as it is now redundant. '
+    'This method is deprecated since v0.5.0',
+  )
   Future<void> centerOnPoints(
     List<LatLng> points, {
-    FitBoundsOptions? options,
     Curve? curve,
     String? customId,
   }) {
-    final bounds = LatLngBounds.fromPoints(points);
+    final cameraFit = CameraFit.bounds(
+      bounds: LatLngBounds.fromPoints(points),
+      padding: const EdgeInsets.all(12),
+    );
 
-    return animatedFitBounds(
-      bounds,
-      options: options,
+    return animatedFitCamera(
+      cameraFit: cameraFit,
       curve: curve,
       customId: customId,
     );
