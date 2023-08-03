@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_animations/src/animated_marker.dart';
@@ -70,17 +72,17 @@ class AnimatedMarkerLayer extends StatelessWidget {
       final bottomPortion = marker.height - anchor.top;
       final topPortion = anchor.top;
 
-      final sw = CustomPoint(
+      final sw = math.Point(
         pxPoint.x + leftPortion,
         pxPoint.y - bottomPortion,
       );
-      final ne = CustomPoint(pxPoint.x - rightPortion, pxPoint.y + topPortion);
+      final ne = math.Point(pxPoint.x - rightPortion, pxPoint.y + topPortion);
 
       if (!mapCamera.pixelBounds.containsPartialBounds(Bounds(sw, ne))) {
         continue;
       }
 
-      final pos = pxPoint - mapCamera.pixelOrigin;
+      final pos = pxPoint - mapCamera.pixelOrigin.toDoublePoint();
       final markerWidget = (marker.rotate ?? rotate)
           ? Transform.rotate(
               angle: -mapCamera.rotationRad,

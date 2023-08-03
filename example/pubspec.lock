@@ -74,17 +74,17 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_map
-      sha256: "9243fcc8d0b544720af6fd3b827428f6a362364445b9c16f83a73a85ce939f90"
+      sha256: "79a378f59b94bfdc2081779e18bc6031d1e6a245001c66f45c930fd285b44f87"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0-dev.1"
+    version: "6.0.0-dev.2"
   flutter_map_animations:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "0.4.1"
+    version: "0.5.0-dev.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
