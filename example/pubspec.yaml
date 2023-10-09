@@ -29,16 +29,15 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  cupertino_icons: ^1.0.5
   flutter:
     sdk: flutter
-  flutter_map: ^6.0.0-dev.2
+  flutter_map: ^6.0.0
   flutter_map_animations:
     path: ../
   latlong2: ^0.9.0
 
 dev_dependencies:
-  flutter_lints: ^2.0.2
+  flutter_lints: ^2.0.3
   flutter_test:
     sdk: flutter
 
