@@ -1,108 +1,73 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/src/animated_marker.dart';
 
 class AnimatedMarkerLayer extends StatelessWidget {
   const AnimatedMarkerLayer({
     super.key,
-    this.markers = const [],
-    this.anchorPos,
+    required this.markers,
     this.rotate = false,
-    this.rotateOrigin,
-    this.rotateAlignment = Alignment.center,
+    this.alignment = Alignment.center,
   });
 
   final List<AnimatedMarker> markers;
 
-  /// {@macro animated_marker_anchor_pos}
-  final AnchorPos? anchorPos;
-
   /// If true markers will be counter rotated to the map rotation.
   final bool rotate;
 
-  /// The origin of the coordinate system (relative to the upper left corner of
-  /// this render object) in which to apply the matrix.
-  ///
-  /// Setting an origin is equivalent to conjugating the transform matrix by a
-  /// translation. This property is provided just for convenience.
-  final Offset? rotateOrigin;
-
-  /// The alignment of the origin, relative to the size of the box.
-  ///
-  /// This is equivalent to setting an origin based on the size of the box.
-  /// If it is specified at the same time as the [rotateOrigin], both are
-  /// applied.
-  ///
-  /// An [AlignmentDirectional.centerStart] value is the same as an [Alignment]
-  /// whose [Alignment.x] value is `-1.0` if [Directionality.of] returns
-  /// [TextDirection.ltr], and `1.0` if [Directionality.of] returns
-  /// [TextDirection.rtl].	 Similarly [AlignmentDirectional.centerEnd] is the
-  /// same as an [Alignment] whose [Alignment.x] value is `1.0` if
-  /// [Directionality.of] returns	 [TextDirection.ltr], and `-1.0` if
-  /// [Directionality.of] returns [TextDirection.rtl].
-  final AlignmentGeometry rotateAlignment;
+  final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
-    final map = FlutterMapState.maybeOf(context);
-    if (map == null) {
+    final mapCamera = MapCamera.maybeOf(context);
+    if (mapCamera == null) {
       throw StateError('No FlutterMapState found.');
     }
 
-    final markerWidgets = <Widget>[];
+    return MobileLayerTransformer(
+      child: Stack(
+        children: (List<AnimatedMarker> markers) sync* {
+          for (final m in markers) {
+            // Resolve real alignment
+            final left = 0.5 * m.width * ((m.alignment ?? alignment).x + 1);
+            final top = 0.5 * m.height * ((m.alignment ?? alignment).y + 1);
+            final right = m.width - left;
+            final bottom = m.height - top;
 
-    for (final marker in markers) {
-      final pxPoint = map.project(marker.point);
+            // Perform projection
+            final pxPoint = mapCamera.project(m.point);
 
-      // See if any portion of the Marker rect resides in the map bounds
-      // If not, don't spend any resources on build function.
-      // This calculation works for any Anchor position whithin the Marker
-      // Note that Anchor coordinates of (0,0) are at bottom-right of the Marker
-      // unlike the map coordinates.
-      final anchor = Anchor.fromPos(
-        marker.anchorPos ?? anchorPos ?? AnchorPos.align(AnchorAlign.center),
-        marker.width,
-        marker.height,
-      );
+            // Cull if out of bounds
+            if (!mapCamera.pixelBounds.containsPartialBounds(
+              Bounds(
+                Point(pxPoint.x + left, pxPoint.y - bottom),
+                Point(pxPoint.x - right, pxPoint.y + top),
+              ),
+            )) continue;
 
-      final rightPortion = marker.width - anchor.left;
-      final leftPortion = anchor.left;
-      final bottomPortion = marker.height - anchor.top;
-      final topPortion = anchor.top;
+            // Apply map camera to marker position
+            final pos = pxPoint.subtract(mapCamera.pixelOrigin);
 
-      final sw = CustomPoint(
-        pxPoint.x + leftPortion,
-        pxPoint.y - bottomPortion,
-      );
-      final ne = CustomPoint(pxPoint.x - rightPortion, pxPoint.y + topPortion);
-
-      if (!map.pixelBounds.containsPartialBounds(Bounds(sw, ne))) {
-        continue;
-      }
-
-      final pos = pxPoint - map.pixelOrigin;
-      final markerWidget = (marker.rotate ?? rotate)
-          ? Transform.rotate(
-              angle: -map.rotationRad,
-              origin: marker.rotateOrigin ?? rotateOrigin,
-              alignment: marker.rotateAlignment ?? rotateAlignment,
-              child: _AnimatedMarkerWidget(marker: marker),
-            )
-          : _AnimatedMarkerWidget(marker: marker);
-
-      markerWidgets.add(
-        Positioned(
-          key: marker.key,
-          width: marker.width,
-          height: marker.height,
-          left: pos.x - rightPortion,
-          top: pos.y - bottomPortion,
-          child: markerWidget,
-        ),
-      );
-    }
-    return Stack(
-      children: markerWidgets,
+            yield Positioned(
+              key: m.key,
+              width: m.width,
+              height: m.height,
+              left: pos.x - right,
+              top: pos.y - bottom,
+              child: (m.rotate ?? rotate)
+                  ? Transform.rotate(
+                      angle: -mapCamera.rotationRad,
+                      alignment: (m.alignment ?? alignment) * -1,
+                      child: _AnimatedMarkerWidget(marker: m),
+                    )
+                  : _AnimatedMarkerWidget(marker: m),
+            );
+          }
+        }(markers)
+            .toList(),
+      ),
     );
   }
 }

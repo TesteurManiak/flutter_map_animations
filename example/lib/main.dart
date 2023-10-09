@@ -52,7 +52,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           return FlutterMap(
             mapController: _animatedMapController.mapController,
             options: MapOptions(
-              center: center,
+              initialCenter: center,
               onTap: (_, point) => _addMarker(point),
             ),
             children: [
@@ -119,8 +119,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               if (markers.value.isEmpty) return;
 
               final points = markers.value.map((m) => m.point).toList();
-              _animatedMapController.centerOnPoints(
-                points,
+              _animatedMapController.animatedFitCamera(
+                cameraFit: CameraFit.coordinates(
+                  coordinates: points,
+                  padding: const EdgeInsets.all(12),
+                ),
                 customId: _useTransformer ? _useTransformerId : null,
               );
             },
@@ -160,7 +163,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           point: point,
           width: markerSize,
           height: markerSize,
-          anchorPos: AnchorPos.align(AnchorAlign.top),
           builder: (context, animation) {
             final size = markerSize * animation.value;
 

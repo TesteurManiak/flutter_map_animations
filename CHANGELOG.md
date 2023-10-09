@@ -1,3 +1,13 @@
+## 0.5.0
+
+**Check the [Migration Guide](https://github.com/TesteurManiak/flutter_map_animations/blob/main/README.md#migration-guide) to learn about breaking changes in this version**
+
+* Updated to [flutter_map](https://pub.dev/packages/flutter_map/versions/6.0.0) v6
+
+## 0.5.0-dev.1
+
+* Updated to [flutter_map](https://pub.dev/packages/flutter_map/versions/6.0.0-dev.2) v6
+
 ## 0.4.1
 
 * Fixed topics in `pubspec.yaml`

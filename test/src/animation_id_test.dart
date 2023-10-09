@@ -1,4 +1,6 @@
-import 'package:flutter_map/plugin_api.dart';
+import 'dart:math' as math;
+
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/src/animation_id.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:latlong2/latlong.dart';
@@ -62,11 +64,21 @@ void main() {
     group('fromMapEvent', () {
       test('should return an AnimationId', () {
         final animationId = AnimationId.fromMapEvent(
-          const MapEventMove(
-            center: LatLng(1, 2),
-            zoom: 6,
-            targetCenter: LatLng(2, 4),
-            targetZoom: 5,
+          MapEventMove(
+            oldCamera: MapCamera(
+              center: const LatLng(1, 2),
+              zoom: 6,
+              crs: const CrsSimple(),
+              rotation: 0,
+              nonRotatedSize: const math.Point(50, 100),
+            ),
+            camera: MapCamera(
+              center: const LatLng(2, 4),
+              zoom: 5,
+              crs: const CrsSimple(),
+              rotation: 0,
+              nonRotatedSize: const math.Point(50, 100),
+            ),
             source: MapEventSource.custom,
             id: validId,
           ),
@@ -77,11 +89,16 @@ void main() {
 
       test('should return null if the MapEvent is not a MapEventMove', () {
         final animationId = AnimationId.fromMapEvent(
-          const MapEventTap(
-            center: LatLng(1, 2),
-            zoom: 6,
+          MapEventTap(
+            camera: MapCamera(
+              center: const LatLng(1, 2),
+              zoom: 6,
+              crs: const CrsSimple(),
+              rotation: 0,
+              nonRotatedSize: const math.Point(50, 100),
+            ),
             source: MapEventSource.custom,
-            tapPosition: LatLng(3, 4),
+            tapPosition: const LatLng(3, 4),
           ),
         );
 
