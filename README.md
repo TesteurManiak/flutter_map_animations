@@ -13,6 +13,7 @@ You can try the example app [here](https://testeurmaniak.github.io/flutter_map_a
         - [Animated Movement](#animated-movement)
     - [AnimatedMarkerLayer & AnimatedMarker](#animatedmarkerlayer--animatedmarker)
 - [Migration Guide](#migration-guide)
+    - [v0.5.0](#v050)
     - [v0.4.0](#v040)
 - [Contributors](#contributors)
 
@@ -87,6 +88,15 @@ FlutterMap(
 ```
 
 # Migration Guide
+
+## v0.5.0
+
+With flutter_map v6 some parameters have been removed or renamed:
+
+* `AnimatedMarker.rotateOrigin`, `AnimatedMarker.anchorPos` have been removed
+* `AnimatedMarker.rotateAlignment` has been renamed to `AnimatedMarker.alignment`
+* `AnimatedMarkerLayer.rotateOrigin`, `AnimatedMarkerLayer.anchorPos` have been removed
+* `AnimatedMarkerLayer.rotateAlignment` has been renamed to `AnimatedMarkerLayer.alignment`
 
 ## v0.4.0
 
