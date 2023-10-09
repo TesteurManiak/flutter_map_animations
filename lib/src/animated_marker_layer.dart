@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/plugin_api.dart';
 import 'package:flutter_map_animations/src/animated_marker.dart';
@@ -44,15 +46,15 @@ class AnimatedMarkerLayer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final map = FlutterMapState.maybeOf(context);
-    if (map == null) {
+    final mapCamera = MapCamera.maybeOf(context);
+    if (mapCamera == null) {
       throw StateError('No FlutterMapState found.');
     }
 
     final markerWidgets = <Widget>[];
 
     for (final marker in markers) {
-      final pxPoint = map.project(marker.point);
+      final pxPoint = mapCamera.project(marker.point);
 
       // See if any portion of the Marker rect resides in the map bounds
       // If not, don't spend any resources on build function.
@@ -60,7 +62,7 @@ class AnimatedMarkerLayer extends StatelessWidget {
       // Note that Anchor coordinates of (0,0) are at bottom-right of the Marker
       // unlike the map coordinates.
       final anchor = Anchor.fromPos(
-        marker.anchorPos ?? anchorPos ?? AnchorPos.align(AnchorAlign.center),
+        marker.anchorPos ?? anchorPos ?? AnchorPos.defaultAnchorPos,
         marker.width,
         marker.height,
       );
@@ -70,20 +72,20 @@ class AnimatedMarkerLayer extends StatelessWidget {
       final bottomPortion = marker.height - anchor.top;
       final topPortion = anchor.top;
 
-      final sw = CustomPoint(
+      final sw = math.Point(
         pxPoint.x + leftPortion,
         pxPoint.y - bottomPortion,
       );
-      final ne = CustomPoint(pxPoint.x - rightPortion, pxPoint.y + topPortion);
+      final ne = math.Point(pxPoint.x - rightPortion, pxPoint.y + topPortion);
 
-      if (!map.pixelBounds.containsPartialBounds(Bounds(sw, ne))) {
+      if (!mapCamera.pixelBounds.containsPartialBounds(Bounds(sw, ne))) {
         continue;
       }
 
-      final pos = pxPoint - map.pixelOrigin;
+      final pos = pxPoint - mapCamera.pixelOrigin.toDoublePoint();
       final markerWidget = (marker.rotate ?? rotate)
           ? Transform.rotate(
-              angle: -map.rotationRad,
+              angle: -mapCamera.rotationRad,
               origin: marker.rotateOrigin ?? rotateOrigin,
               alignment: marker.rotateAlignment ?? rotateAlignment,
               child: _AnimatedMarkerWidget(marker: marker),
