@@ -1,3 +1,7 @@
+## 0.5.0
+
+* Updated to [flutter_map](https://pub.dev/packages/flutter_map/versions/6.0.0) v6
+
 ## 0.5.0-dev.1
 
 * Updated to [flutter_map](https://pub.dev/packages/flutter_map/versions/6.0.0-dev.2) v6
