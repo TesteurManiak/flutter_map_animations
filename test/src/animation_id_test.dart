@@ -68,14 +68,14 @@ void main() {
             oldCamera: MapCamera(
               center: const LatLng(1, 2),
               zoom: 6,
-              crs: CrsSimple(),
+              crs: const CrsSimple(),
               rotation: 0,
               nonRotatedSize: const math.Point(50, 100),
             ),
             camera: MapCamera(
               center: const LatLng(2, 4),
               zoom: 5,
-              crs: CrsSimple(),
+              crs: const CrsSimple(),
               rotation: 0,
               nonRotatedSize: const math.Point(50, 100),
             ),
@@ -93,7 +93,7 @@ void main() {
             camera: MapCamera(
               center: const LatLng(1, 2),
               zoom: 6,
-              crs: CrsSimple(),
+              crs: const CrsSimple(),
               rotation: 0,
               nonRotatedSize: const math.Point(50, 100),
             ),
