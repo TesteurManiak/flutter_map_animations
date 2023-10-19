@@ -52,9 +52,9 @@ FlutterMap(
 
 ### Animated Movement
 
-| Rotation                                 | Zoom                                   | Center on point                                   |
-| ---------------------------------------- | -------------------------------------- | ------------------------------------------------- |
-| <img src="gifs/rotate.gif" height="400"> | <img src="gifs/zoom.gif" height="400"> | <img src="gifs/center-on-point.gif" height="400"> |
+| Rotation | Zoom | Center on point |
+| ----- | ----- | ----- |
+| <img src="https://github.com/TesteurManiak/flutter_map_animations/blob/main/gifs/rotate.gif?raw=true" height="400"> | <img src="https://github.com/TesteurManiak/flutter_map_animations/blob/main/gifs/zoom.gif?raw=true" height="400"> | <img src="https://github.com/TesteurManiak/flutter_map_animations/blob/main/gifs/center-on-point.gif?raw=true" height="400"> |
 
 Check the [`AnimatedMapController` API][animated-map-controller] for more!
 
