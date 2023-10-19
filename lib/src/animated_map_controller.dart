@@ -344,7 +344,12 @@ class AnimatedMapController {
     String? customId,
     double? rotation,
   }) {
-    final centerZoom = cameraFit.fit(mapController.camera);
+    MapCamera camera = mapController.camera;
+    if (rotation != null) {
+      camera = camera.withRotation(rotation);
+    }
+
+    final centerZoom = cameraFit.fit(camera);
 
     return animateTo(
       dest: centerZoom.center,
