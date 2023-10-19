@@ -1,3 +1,7 @@
+## 0.5.2
+
+* Fixed GIFs link in README.md
+
 ## 0.5.1
 
 * feat: updated example with flutter_map_cancellable_tile_provider by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/14
