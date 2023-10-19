@@ -90,7 +90,7 @@ FlutterMap(
 
 ## v0.5.0
 
-With flutter_map v6 some parameters have been removed or renamed:
+With [flutter_map v6][flutter-map-v6] some parameters have been removed or renamed:
 
 * `AnimatedMarker.rotateOrigin`, `AnimatedMarker.anchorPos` have been removed
 * `AnimatedMarker.rotateAlignment` has been renamed to `AnimatedMarker.alignment`
@@ -99,7 +99,7 @@ With flutter_map v6 some parameters have been removed or renamed:
 
 ## v0.4.0
 
-* With flutter_map v5 it's not possible anymore to extend `MapControllerImpl` which was used to use the `AnimatedMapController` directly as a `MapController` in the `FlutterMap` widget. Now an instance of `MapController` is created internally or can be passed as a parameter to the `AnimatedMapController` constructor. You can access it with the `mapController` getter:
+* With [flutter_map v5][flutter-map-v5] it's not possible anymore to extend `MapControllerImpl` which was used to use the `AnimatedMapController` directly as a `MapController` in the `FlutterMap` widget. Now an instance of `MapController` is created internally or can be passed as a parameter to the `AnimatedMapController` constructor. You can access it with the `mapController` getter:
 
 ```dart
 late final _animatedMapController = AnimatedMapController(vsync: this);
@@ -139,3 +139,5 @@ Widget build(BuildContext context) {
 [pub-flutter-map]: https://pub.dev/packages/flutter_map
 [example]: https://testeurmaniak.github.io/flutter_map_animations/#/
 [animated-map-controller]: https://pub.dev/documentation/flutter_map_animations/latest/flutter_map_animations/AnimatedMapController-class.html
+[flutter-map-v6]: https://pub.dev/packages/flutter_map/changelog#600---20231009
+[flutter-map-v5]: https://pub.dev/packages/flutter_map/changelog#500---20230604
