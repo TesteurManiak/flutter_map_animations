@@ -337,13 +337,12 @@ class AnimatedMapController {
   /// Will use the [cameraFit] to calculate the center and zoom level and then
   /// animate to that position.
   ///
-  /// If [options] is not specified, it will use a default padding of 12.
-  ///
   /// {@macro animated_map_controller.animate_to.curve}
   Future<void> animatedFitCamera({
     required CameraFit cameraFit,
     Curve? curve,
     String? customId,
+    double? rotation,
   }) {
     final centerZoom = cameraFit.fit(mapController.camera);
 
@@ -352,14 +351,13 @@ class AnimatedMapController {
       zoom: centerZoom.zoom,
       curve: curve,
       customId: customId,
+      rotation: rotation,
     );
   }
 
   /// Will use the [LatLngBounds.fromPoints] method to calculate the bounds of
   /// the [points] and then use the [animatedFitCamera] method to animate to
   /// that position.
-  ///
-  /// If [options] is not specified, it will use a default padding of 12.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
   @Deprecated(
