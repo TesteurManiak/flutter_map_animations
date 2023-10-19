@@ -1,10 +1,10 @@
 # Flutter Map Animations
 
-[![Pub Version (including pre-releases)](https://img.shields.io/pub/v/flutter_map_animations?include_prereleases)](https://pub.dev/packages/flutter_map_animations)
+[![Pub Version (including pre-releases)](https://img.shields.io/pub/v/flutter_map_animations?include_prereleases)][pub-package]
 
-Animation utility for the [flutter_map](https://pub.dev/packages/flutter_map) package.
+Animation utility for the [flutter_map][pub-flutter-map] package.
 
-You can try the example app [here](https://testeurmaniak.github.io/flutter_map_animations/#/).
+[Try the example app][example]
 
 # Table of Contents
 
@@ -52,18 +52,11 @@ FlutterMap(
 
 ### Animated Movement
 
-All those methods are accessible from the `AnimatedMapController`:
+| Rotation                                 | Zoom                                   | Center on point                                   |
+| ---------------------------------------- | -------------------------------------- | ------------------------------------------------- |
+| <img src="gifs/rotate.gif" height="400"> | <img src="gifs/zoom.gif" height="400"> | <img src="gifs/center-on-point.gif" height="400"> |
 
-* `animateTo({LatLng? dest, double? zoom, double? rotation, Curve? curve})`
-* `animatedRotateFrom(double degree, {Curve? curve})`
-* `animatedRotateTo(double degree, {Curve? curve})`
-* `animatedRotateReset({Curve? curve})`
-* `animatedZoomTo(double newZoom, {Curve? curve})`
-* `animatedZoomIn({Curve? curve})`
-* `animatedZoomOut({Curve? curve})`
-* `centerOnPoint(LatLng point, {double? zoom, Curve? curve})`
-* `centerOnPoints(List<LatLng> points, {FitBoundsOptions? options, Curve? curve})`
-* `animatedFitBounds(LatLngBounds bounds, {FitBoundsOptions? options, Curve? curve})`
+Check the [`AnimatedMapController` API][animated-map-controller] for more!
 
 ## AnimatedMarkerLayer & AnimatedMarker
 
@@ -79,7 +72,13 @@ FlutterMap(
             markers: [
                 AnimatedMarker(
                     point: LatLng(51.509364, -0.128928),
-                    builder: (_, __) => Icon(Icons.location_on),
+                    builder: (_, animation) {
+                        final size = 50.0 * animation.value;
+                        return Icon(
+                            Icons.location_on,
+                            size: size,
+                        );
+                    },
                 ),
             ],
         ),
@@ -135,3 +134,8 @@ Widget build(BuildContext context) {
     </td></tr>
 </table>
 <!-- readme: contributors -end -->
+
+[pub-package]: https://pub.dev/packages/flutter_map_animations
+[pub-flutter-map]: https://pub.dev/packages/flutter_map
+[example]: https://testeurmaniak.github.io/flutter_map_animations/#/
+[animated-map-controller]: https://pub.dev/documentation/flutter_map_animations/latest/flutter_map_animations/AnimatedMapController-class.html
