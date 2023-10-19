@@ -126,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   coordinates: points,
                   padding: const EdgeInsets.all(12),
                 ),
+                rotation: 0,
                 customId: _useTransformer ? _useTransformerId : null,
               );
             },
