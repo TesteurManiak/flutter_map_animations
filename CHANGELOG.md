@@ -1,3 +1,10 @@
+## 0.5.1
+
+* feat: updated example with flutter_map_cancellable_tile_provider by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/14
+* feat: added rotation parameter to animatedFitCamera by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/16
+* fix: update camera with correct rotation by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/17
+* Chore/update readme by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/18
+
 ## 0.5.0
 
 **Check the [Migration Guide](https://github.com/TesteurManiak/flutter_map_animations/blob/main/README.md#migration-guide) to learn about breaking changes in this version**
