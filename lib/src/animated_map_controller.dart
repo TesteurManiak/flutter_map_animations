@@ -11,7 +11,7 @@ typedef _MovementCallback = bool Function(
   CurvedAnimation animation,
   LatLngTween latLngTween,
   Tween<double> zoomTween,
-  Offset offset,
+  Tween<Offset> offset,
   Tween<double> rotateTween,
   AnimationId animationId,
 );
@@ -117,6 +117,10 @@ class AnimatedMapController {
       begin: mapController.camera.zoom,
       end: effectiveZoom,
     );
+    final offsetTween = Tween<Offset>(
+      begin: Offset.zero,
+      end: offset,
+    );
     double startRotation = this.rotation;
     double endRotation = effectiveRotation;
 
@@ -189,7 +193,7 @@ class AnimatedMapController {
         animation,
         latLngTween,
         zoomTween,
-        offset,
+        offsetTween,
         rotateTween,
         animationId,
       );
@@ -210,7 +214,7 @@ class AnimatedMapController {
         animation,
         latLngTween,
         zoomTween,
-        offset,
+        offsetTween,
         rotateTween,
         animationId,
       ) {
@@ -227,14 +231,14 @@ class AnimatedMapController {
         animation,
         latLngTween,
         zoomTween,
-        offset,
+        offsetTween,
         rotateTween,
         animationId,
       ) =>
           mapController.move(
             latLngTween.evaluate(animation),
             zoomTween.evaluate(animation),
-            offset: offset,
+            offset: offsetTween.evaluate(animation),
             id: animationId.id,
           );
     } else if (hasRotation) {
@@ -242,7 +246,7 @@ class AnimatedMapController {
         animation,
         latLngTween,
         zoomTween,
-        offset,
+        offsetTween,
         rotateTween,
         animationId,
       ) =>
