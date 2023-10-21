@@ -11,6 +11,7 @@ typedef _MovementCallback = bool Function(
   CurvedAnimation animation,
   LatLngTween latLngTween,
   Tween<double> zoomTween,
+  Offset offset,
   Tween<double> rotateTween,
   AnimationId animationId,
 );
@@ -79,6 +80,9 @@ class AnimatedMapController {
   /// Animate the map to [dest] with an optional [zoom] level and [rotation] in
   /// degrees.
   ///
+  /// [offset] is only supported where [rotation] is `null`, due to a flutter_map
+  /// limitation.
+  ///
   /// If specified, [zoom] must be greater or equal to 0.
   ///
   /// {@template animated_map_controller.animate_to.curve}
@@ -88,6 +92,7 @@ class AnimatedMapController {
   Future<void> animateTo({
     LatLng? dest,
     double? zoom,
+    Offset offset = Offset.zero,
     double? rotation,
     Curve? curve,
     String? customId,
@@ -184,6 +189,7 @@ class AnimatedMapController {
         animation,
         latLngTween,
         zoomTween,
+        offset,
         rotateTween,
         animationId,
       );
@@ -200,7 +206,14 @@ class AnimatedMapController {
     required bool hasRotation,
   }) {
     if (hasMovement && hasRotation) {
-      return (animation, latLngTween, zoomTween, rotateTween, animationId) {
+      return (
+        animation,
+        latLngTween,
+        zoomTween,
+        offset,
+        rotateTween,
+        animationId,
+      ) {
         final result = mapController.moveAndRotate(
           latLngTween.evaluate(animation),
           zoomTween.evaluate(animation),
@@ -210,14 +223,29 @@ class AnimatedMapController {
         return result.moveSuccess || result.rotateSuccess;
       };
     } else if (hasMovement) {
-      return (animation, latLngTween, zoomTween, rotateTween, animationId) =>
+      return (
+        animation,
+        latLngTween,
+        zoomTween,
+        offset,
+        rotateTween,
+        animationId,
+      ) =>
           mapController.move(
             latLngTween.evaluate(animation),
             zoomTween.evaluate(animation),
+            offset: offset,
             id: animationId.id,
           );
     } else if (hasRotation) {
-      return (animation, latLngTween, zoomTween, rotateTween, animationId) =>
+      return (
+        animation,
+        latLngTween,
+        zoomTween,
+        offset,
+        rotateTween,
+        animationId,
+      ) =>
           mapController.rotate(
             rotateTween.evaluate(animation),
             id: animationId.id,
