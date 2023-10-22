@@ -131,6 +131,13 @@ Widget build(BuildContext context) {
             <br />
             <sub><b>Rory Stephenson</b></sub>
         </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/JaffaKetchup">
+            <img src="https://avatars.githubusercontent.com/u/58115698?v=4" width="100;" alt="JaffaKetchup"/>
+            <br />
+            <sub><b>Luka S</b></sub>
+        </a>
     </td></tr>
 </table>
 <!-- readme: contributors -end -->
