@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/src/animation_extensions.dart';
 import 'package:flutter_map_animations/src/animation_id.dart';
-import 'package:flutter_map_animations/src/lat_lng_tween.dart';
 import 'package:latlong2/latlong.dart';
 
 typedef _MovementCallback = bool Function(

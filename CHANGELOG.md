@@ -1,3 +1,8 @@
+## 0.5.3
+
+* Updated to [flutter_map](https://pub.dev/packages/flutter_map/versions/6.0.1) v6.0.1
+  * Removed local `LatLngTween` implementation (replaced by [the one in `flutter_map`](https://pub.dev/documentation/flutter_map/latest/flutter_map/LatLngTween-class.html))
+
 ## 0.5.2
 
 * Fixed GIFs link in README.md
