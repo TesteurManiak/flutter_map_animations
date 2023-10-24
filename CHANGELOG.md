@@ -1,7 +1,8 @@
 ## 0.5.3
 
-* Updated to [flutter_map](https://pub.dev/packages/flutter_map/versions/6.0.1) v6.0.1
-  * Removed local `LatLngTween` implementation (replaced by [the one in `flutter_map`](https://pub.dev/documentation/flutter_map/latest/flutter_map/LatLngTween-class.html))
+* Added `offset` support to `animateTo` by @JaffaKetchup in https://github.com/TesteurManiak/flutter_map_animations/pull/20
+* docs(contributor): contributors readme action update by @github-actions in https://github.com/TesteurManiak/flutter_map_animations/pull/21
+* 23 android build conflicts by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/24
 
 ## 0.5.2
 
