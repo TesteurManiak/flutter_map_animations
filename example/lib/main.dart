@@ -34,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   final center = const LatLng(51.509364, -0.128928);
 
   bool _useTransformer = true;
+  int _lastMovedToMarkerIndex = -1;
 
   late final _animatedMapController = AnimatedMapController(vsync: this);
 
@@ -131,6 +132,49 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               );
             },
             child: const Icon(Icons.center_focus_strong),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FloatingActionButton(
+                tooltip: 'Move to next marker with offset',
+                onPressed: () {
+                  if (markers.value.isEmpty) return;
+
+                  final points = markers.value.map((m) => m.point);
+                  setState(
+                    () => _lastMovedToMarkerIndex =
+                        (_lastMovedToMarkerIndex + 1) % points.length,
+                  );
+
+                  _animatedMapController.animateTo(
+                    dest: points.elementAt(_lastMovedToMarkerIndex),
+                    customId: _useTransformer ? _useTransformerId : null,
+                    offset: const Offset(100, 100),
+                  );
+                },
+                child: const Icon(Icons.multiple_stop),
+              ),
+              const SizedBox.square(dimension: 8),
+              FloatingActionButton(
+                tooltip: 'Move to next marker',
+                onPressed: () {
+                  if (markers.value.isEmpty) return;
+
+                  final points = markers.value.map((m) => m.point);
+                  setState(
+                    () => _lastMovedToMarkerIndex =
+                        (_lastMovedToMarkerIndex + 1) % points.length,
+                  );
+
+                  _animatedMapController.animateTo(
+                    dest: points.elementAt(_lastMovedToMarkerIndex),
+                    customId: _useTransformer ? _useTransformerId : null,
+                  );
+                },
+                child: const Icon(Icons.polyline_rounded),
+              ),
+            ],
           ),
           FloatingActionButton.extended(
             label: Row(
