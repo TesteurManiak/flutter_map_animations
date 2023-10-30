@@ -4,6 +4,15 @@ version: 0.5.3
 homepage: https://github.com/TesteurManiak/flutter_map_animations
 repository: https://github.com/TesteurManiak/flutter_map_animations
 issue_tracker: https://github.com/TesteurManiak/flutter_map_animations/issues
+screenshots:path:
+  - description: Animated markers
+    path: gifs/animated-marker.gif
+  - description: Animated movement
+    path: gifs/center-on-point.gif
+  - description: Animated rotate
+    path: gifs/rotate.gif
+  - description: Animated zoom
+    path: gifs/zoom.gif
 funding:
   - https://www.buymeacoffee.com/guillaumeroux
 topics:
