@@ -29,7 +29,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   static const _useTransformerId = 'useTransformerId';
 
-  final markerSize = 50.0;
   final markers = ValueNotifier<List<AnimatedMarker>>([]);
   final center = const LatLng(51.509364, -0.128928);
 
@@ -119,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           FloatingActionButton(
             tooltip: 'Center on markers',
             onPressed: () {
-              if (markers.value.isEmpty) return;
+              if (markers.value.length < 2) return;
 
               final points = markers.value.map((m) => m.point).toList();
               _animatedMapController.animatedFitCamera(
@@ -185,17 +184,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   activeTrackColor: Colors.black38,
                   value: _useTransformer,
                   onChanged: (newValue) {
-                    setState(() {
-                      _useTransformer = newValue;
-                    });
+                    setState(() => _useTransformer = newValue);
                   },
                 ),
               ],
             ),
             onPressed: () {
-              setState(() {
-                _useTransformer = !_useTransformer;
-              });
+              setState(() => _useTransformer = !_useTransformer);
             },
           ),
         ],
@@ -206,18 +201,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void _addMarker(LatLng point) {
     markers.value = List.from(markers.value)
       ..add(
-        AnimatedMarker(
+        MyMarker(
           point: point,
+          onTap: () => _animatedMapController.animateTo(
+            dest: point,
+            customId: _useTransformer ? _useTransformerId : null,
+          ),
+        ),
+      );
+  }
+}
+
+class MyMarker extends AnimatedMarker {
+  MyMarker({
+    required super.point,
+    VoidCallback? onTap,
+  }) : super(
           width: markerSize,
           height: markerSize,
           builder: (context, animation) {
             final size = markerSize * animation.value;
 
             return GestureDetector(
-              onTap: () => _animatedMapController.animateTo(
-                dest: point,
-                customId: _useTransformer ? _useTransformerId : null,
-              ),
+              onTap: onTap,
               child: Opacity(
                 opacity: animation.value,
                 child: Icon(
@@ -227,9 +233,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               ),
             );
           },
-        ),
-      );
-  }
+        );
+
+  static const markerSize = 50.0;
 }
 
 class SeparatedColumn extends StatelessWidget {
