@@ -60,6 +60,10 @@ Check the [`AnimatedMapController` API][animated-map-controller] for more!
 
 ## AnimatedMarkerLayer & AnimatedMarker
 
+| AnimatedMarker |
+| ----- |
+| <img src="" height="400"> |
+
 ```dart
 FlutterMap(
     mapController: _animatedMapController.mapController,
