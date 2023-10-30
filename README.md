@@ -62,7 +62,7 @@ Check the [`AnimatedMapController` API][animated-map-controller] for more!
 
 | AnimatedMarker |
 | ----- |
-| <img src="" height="400"> |
+| <img src="https://raw.githubusercontent.com/TesteurManiak/flutter_map_animations/main/gifs/animated-marker.gif" height="400"> |
 
 ```dart
 FlutterMap(
