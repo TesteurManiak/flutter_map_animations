@@ -137,6 +137,13 @@ Widget build(BuildContext context) {
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/ReinisSprogis">
+            <img src="https://avatars.githubusercontent.com/u/69913791?v=4" width="100;" alt="ReinisSprogis"/>
+            <br />
+            <sub><b>Reinis Sprogis</b></sub>
+        </a>
+    </td>
+    <td align="center">
         <a href="https://github.com/JaffaKetchup">
             <img src="https://avatars.githubusercontent.com/u/58115698?v=4" width="100;" alt="JaffaKetchup"/>
             <br />
