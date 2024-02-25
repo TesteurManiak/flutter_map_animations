@@ -339,32 +339,6 @@ class AnimatedMapController {
     return animateTo(zoom: newZoom, curve: curve, customId: customId);
   }
 
-  @Deprecated(
-    'Prefer `animatedFitCamera` with a `CameraFit.bounds()` instead. '
-    'This method will be removed in a future release as it is now redundant. '
-    'This method is deprecated since v0.5.0',
-  )
-  Future<void> animatedFitBounds(
-    LatLngBounds bounds, {
-    FitBoundsOptions? options,
-    Curve? curve,
-    String? customId,
-  }) {
-    final cameraFit = options == null
-        ? CameraFit.bounds(bounds: bounds)
-        : CameraFit.bounds(
-            bounds: bounds,
-            padding: options.padding,
-            maxZoom: options.maxZoom,
-            forceIntegerZoomLevel: options.forceIntegerZoomLevel,
-          );
-    return animatedFitCamera(
-      cameraFit: cameraFit,
-      curve: curve,
-      customId: customId,
-    );
-  }
-
   /// Will use the [cameraFit] to calculate the center and zoom level and then
   /// animate to that position.
   ///
