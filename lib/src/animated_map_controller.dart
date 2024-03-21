@@ -123,17 +123,7 @@ class AnimatedMapController {
     double startRotation = this.rotation;
     double endRotation = effectiveRotation;
 
-    // If the difference between the bearings is greater than 180 degrees,
-    // add or subtract 360 degrees to one of them to make the shortest
-    // rotation direction counterclockwise.
-    final diff = endRotation - startRotation;
-    if (diff > 180.0) {
-      startRotation += 360.0;
-    } else if (diff < -180.0) {
-      endRotation += 360.0;
-    }
-
-    final rotateTween = Tween<double>(
+    final rotateTween = _AngleTween(
       begin: startRotation,
       end: endRotation,
     );
@@ -339,6 +329,32 @@ class AnimatedMapController {
     return animateTo(zoom: newZoom, curve: curve, customId: customId);
   }
 
+  @Deprecated(
+    'Prefer `animatedFitCamera` with a `CameraFit.bounds()` instead. '
+    'This method will be removed in a future release as it is now redundant. '
+    'This method is deprecated since v0.5.0',
+  )
+  Future<void> animatedFitBounds(
+    LatLngBounds bounds, {
+    FitBoundsOptions? options,
+    Curve? curve,
+    String? customId,
+  }) {
+    final cameraFit = options == null
+        ? CameraFit.bounds(bounds: bounds)
+        : CameraFit.bounds(
+            bounds: bounds,
+            padding: options.padding,
+            maxZoom: options.maxZoom,
+            forceIntegerZoomLevel: options.forceIntegerZoomLevel,
+          );
+    return animatedFitCamera(
+      cameraFit: cameraFit,
+      curve: curve,
+      customId: customId,
+    );
+  }
+
   /// Will use the [cameraFit] to calculate the center and zoom level and then
   /// animate to that position.
   ///
@@ -390,5 +406,17 @@ class AnimatedMapController {
       curve: curve,
       customId: customId,
     );
+  }
+}
+
+class _AngleTween extends Tween<double> {
+  _AngleTween({required double super.begin, required double super.end});
+
+  @override
+  double lerp(double t) => begin! + _angleDifference(begin!, end!) * t;
+
+  static double _angleDifference(double angle1, double angle2) {
+    final diff = (angle2 - angle1 + 180) % 360 - 180;
+    return diff < -180 ? diff + 360 : diff;
   }
 }
