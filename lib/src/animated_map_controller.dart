@@ -380,33 +380,6 @@ class AnimatedMapController {
       rotation: rotation,
     );
   }
-
-  /// Will use the [LatLngBounds.fromPoints] method to calculate the bounds of
-  /// the [points] and then use the [animatedFitCamera] method to animate to
-  /// that position.
-  ///
-  /// {@macro animated_map_controller.animate_to.curve}
-  @Deprecated(
-    'Prefer `animatedFitCamera` with a `CameraFit.coordiantes() or CameraFit.bounds()` instead. '
-    'This method will be removed in a future release as it is now redundant. '
-    'This method is deprecated since v0.5.0',
-  )
-  Future<void> centerOnPoints(
-    List<LatLng> points, {
-    Curve? curve,
-    String? customId,
-  }) {
-    final cameraFit = CameraFit.bounds(
-      bounds: LatLngBounds.fromPoints(points),
-      padding: const EdgeInsets.all(12),
-    );
-
-    return animatedFitCamera(
-      cameraFit: cameraFit,
-      curve: curve,
-      customId: customId,
-    );
-  }
 }
 
 class _AngleTween extends Tween<double> {
