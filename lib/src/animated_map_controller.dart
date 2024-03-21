@@ -123,7 +123,7 @@ class AnimatedMapController {
     double startRotation = this.rotation;
     double endRotation = effectiveRotation;
 
-    final rotateTween = AngleTween(
+    final rotateTween = _AngleTween(
       begin: startRotation,
       end: endRotation,
     );
