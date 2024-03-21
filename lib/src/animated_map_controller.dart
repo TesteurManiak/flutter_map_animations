@@ -123,7 +123,7 @@ class AnimatedMapController {
     double startRotation = this.rotation;
     double endRotation = effectiveRotation;
 
-    final rotateTween = _AngleTween(
+    final rotateTween = AngleTween(
       begin: startRotation,
       end: endRotation,
     );
@@ -329,32 +329,6 @@ class AnimatedMapController {
     return animateTo(zoom: newZoom, curve: curve, customId: customId);
   }
 
-  @Deprecated(
-    'Prefer `animatedFitCamera` with a `CameraFit.bounds()` instead. '
-    'This method will be removed in a future release as it is now redundant. '
-    'This method is deprecated since v0.5.0',
-  )
-  Future<void> animatedFitBounds(
-    LatLngBounds bounds, {
-    FitBoundsOptions? options,
-    Curve? curve,
-    String? customId,
-  }) {
-    final cameraFit = options == null
-        ? CameraFit.bounds(bounds: bounds)
-        : CameraFit.bounds(
-            bounds: bounds,
-            padding: options.padding,
-            maxZoom: options.maxZoom,
-            forceIntegerZoomLevel: options.forceIntegerZoomLevel,
-          );
-    return animatedFitCamera(
-      cameraFit: cameraFit,
-      curve: curve,
-      customId: customId,
-    );
-  }
-
   /// Will use the [cameraFit] to calculate the center and zoom level and then
   /// animate to that position.
   ///
@@ -378,6 +352,33 @@ class AnimatedMapController {
       curve: curve,
       customId: customId,
       rotation: rotation,
+    );
+  }
+
+  /// Will use the [LatLngBounds.fromPoints] method to calculate the bounds of
+  /// the [points] and then use the [animatedFitCamera] method to animate to
+  /// that position.
+  ///
+  /// {@macro animated_map_controller.animate_to.curve}
+  @Deprecated(
+    'Prefer `animatedFitCamera` with a `CameraFit.coordiantes() or CameraFit.bounds()` instead. '
+    'This method will be removed in a future release as it is now redundant. '
+    'This method is deprecated since v0.5.0',
+  )
+  Future<void> centerOnPoints(
+    List<LatLng> points, {
+    Curve? curve,
+    String? customId,
+  }) {
+    final cameraFit = CameraFit.bounds(
+      bounds: LatLngBounds.fromPoints(points),
+      padding: const EdgeInsets.all(12),
+    );
+
+    return animatedFitCamera(
+      cameraFit: cameraFit,
+      curve: curve,
+      customId: customId,
     );
   }
 }
