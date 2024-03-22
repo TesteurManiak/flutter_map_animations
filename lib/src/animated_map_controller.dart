@@ -120,8 +120,8 @@ class AnimatedMapController {
       begin: Offset.zero,
       end: offset,
     );
-    double startRotation = this.rotation;
-    double endRotation = effectiveRotation;
+    final startRotation = this.rotation;
+    final endRotation = effectiveRotation;
 
     final rotateTween = _AngleTween(
       begin: startRotation,
@@ -384,10 +384,17 @@ class AnimatedMapController {
 }
 
 class _AngleTween extends Tween<double> {
-  _AngleTween({required double super.begin, required double super.end});
+  _AngleTween({
+    required double super.begin,
+    required double super.end,
+  })  : _begin = begin,
+        _end = end;
+
+  final double _begin;
+  final double _end;
 
   @override
-  double lerp(double t) => begin! + _angleDifference(begin!, end!) * t;
+  double lerp(double t) => _begin + _angleDifference(_begin, _end) * t;
 
   static double _angleDifference(double angle1, double angle2) {
     final diff = (angle2 - angle1 + 180) % 360 - 180;

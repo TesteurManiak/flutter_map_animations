@@ -1,3 +1,15 @@
+## 0.6.0
+
+* Dependencies_upgrade by @ReinisSprogis in https://github.com/TesteurManiak/flutter_map_animations/pull/26
+* docs(contributor): contributors readme action update by @github-actions in https://github.com/TesteurManiak/flutter_map_animations/pull/27
+* fix: added dedicated `_AngleTween` to improve rotation animation by @JaffaKetchup in https://github.com/TesteurManiak/flutter_map_animations/pull/28
+* docs(contributor): contributors readme action update by @github-actions in https://github.com/TesteurManiak/flutter_map_animations/pull/29
+
+### New Contributors
+* @ReinisSprogis made their first contribution in https://github.com/TesteurManiak/flutter_map_animations/pull/26
+
+**Full Changelog**: https://github.com/TesteurManiak/flutter_map_animations/compare/0.5.3...0.6.0
+
 ## 0.5.3
 
 * Added `offset` support to `animateTo` by @JaffaKetchup in https://github.com/TesteurManiak/flutter_map_animations/pull/20
