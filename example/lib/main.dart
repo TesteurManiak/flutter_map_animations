@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/flutter_map_animations.dart';
+import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:latlong2/latlong.dart';
 
 void main() {
@@ -28,11 +29,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   static const _useTransformerId = 'useTransformerId';
 
-  final markerSize = 50.0;
   final markers = ValueNotifier<List<AnimatedMarker>>([]);
   final center = const LatLng(51.509364, -0.128928);
 
   bool _useTransformer = true;
+  int _lastMovedToMarkerIndex = -1;
 
   late final _animatedMapController = AnimatedMapController(vsync: this);
 
@@ -60,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.example.app',
                 tileUpdateTransformer: _animatedMoveTileUpdateTransformer,
+                tileProvider: CancellableNetworkTileProvider(),
               ),
               AnimatedMarkerLayer(markers: markers),
             ],
@@ -116,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           FloatingActionButton(
             tooltip: 'Center on markers',
             onPressed: () {
-              if (markers.value.isEmpty) return;
+              if (markers.value.length < 2) return;
 
               final points = markers.value.map((m) => m.point).toList();
               _animatedMapController.animatedFitCamera(
@@ -124,10 +126,54 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   coordinates: points,
                   padding: const EdgeInsets.all(12),
                 ),
+                rotation: 0,
                 customId: _useTransformer ? _useTransformerId : null,
               );
             },
             child: const Icon(Icons.center_focus_strong),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FloatingActionButton(
+                tooltip: 'Move to next marker with offset',
+                onPressed: () {
+                  if (markers.value.isEmpty) return;
+
+                  final points = markers.value.map((m) => m.point);
+                  setState(
+                    () => _lastMovedToMarkerIndex =
+                        (_lastMovedToMarkerIndex + 1) % points.length,
+                  );
+
+                  _animatedMapController.animateTo(
+                    dest: points.elementAt(_lastMovedToMarkerIndex),
+                    customId: _useTransformer ? _useTransformerId : null,
+                    offset: const Offset(100, 100),
+                  );
+                },
+                child: const Icon(Icons.multiple_stop),
+              ),
+              const SizedBox.square(dimension: 8),
+              FloatingActionButton(
+                tooltip: 'Move to next marker',
+                onPressed: () {
+                  if (markers.value.isEmpty) return;
+
+                  final points = markers.value.map((m) => m.point);
+                  setState(
+                    () => _lastMovedToMarkerIndex =
+                        (_lastMovedToMarkerIndex + 1) % points.length,
+                  );
+
+                  _animatedMapController.animateTo(
+                    dest: points.elementAt(_lastMovedToMarkerIndex),
+                    customId: _useTransformer ? _useTransformerId : null,
+                  );
+                },
+                child: const Icon(Icons.polyline_rounded),
+              ),
+            ],
           ),
           FloatingActionButton.extended(
             label: Row(
@@ -138,17 +184,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   activeTrackColor: Colors.black38,
                   value: _useTransformer,
                   onChanged: (newValue) {
-                    setState(() {
-                      _useTransformer = newValue;
-                    });
+                    setState(() => _useTransformer = newValue);
                   },
                 ),
               ],
             ),
             onPressed: () {
-              setState(() {
-                _useTransformer = !_useTransformer;
-              });
+              setState(() => _useTransformer = !_useTransformer);
             },
           ),
         ],
@@ -159,18 +201,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void _addMarker(LatLng point) {
     markers.value = List.from(markers.value)
       ..add(
-        AnimatedMarker(
+        MyMarker(
           point: point,
+          onTap: () => _animatedMapController.animateTo(
+            dest: point,
+            customId: _useTransformer ? _useTransformerId : null,
+          ),
+        ),
+      );
+  }
+}
+
+class MyMarker extends AnimatedMarker {
+  MyMarker({
+    required super.point,
+    VoidCallback? onTap,
+  }) : super(
           width: markerSize,
           height: markerSize,
           builder: (context, animation) {
             final size = markerSize * animation.value;
 
             return GestureDetector(
-              onTap: () => _animatedMapController.animateTo(
-                dest: point,
-                customId: _useTransformer ? _useTransformerId : null,
-              ),
+              onTap: onTap,
               child: Opacity(
                 opacity: animation.value,
                 child: Icon(
@@ -180,9 +233,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               ),
             );
           },
-        ),
-      );
-  }
+        );
+
+  static const markerSize = 50.0;
 }
 
 class SeparatedColumn extends StatelessWidget {

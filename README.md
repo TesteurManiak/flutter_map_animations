@@ -1,10 +1,10 @@
 # Flutter Map Animations
 
-[![Pub Version (including pre-releases)](https://img.shields.io/pub/v/flutter_map_animations?include_prereleases)](https://pub.dev/packages/flutter_map_animations)
+[![Pub Version (including pre-releases)](https://img.shields.io/pub/v/flutter_map_animations?include_prereleases)][pub-package]
 
-Animation utility for the [flutter_map](https://pub.dev/packages/flutter_map) package.
+Animation utility for the [flutter_map][pub-flutter-map] package.
 
-You can try the example app [here](https://testeurmaniak.github.io/flutter_map_animations/#/).
+[Try the example app][example]
 
 # Table of Contents
 
@@ -52,20 +52,17 @@ FlutterMap(
 
 ### Animated Movement
 
-All those methods are accessible from the `AnimatedMapController`:
+| Rotation | Zoom | Center on point |
+| ----- | ----- | ----- |
+| <img src="https://github.com/TesteurManiak/flutter_map_animations/blob/main/gifs/rotate.gif?raw=true" height="400"> | <img src="https://github.com/TesteurManiak/flutter_map_animations/blob/main/gifs/zoom.gif?raw=true" height="400"> | <img src="https://github.com/TesteurManiak/flutter_map_animations/blob/main/gifs/center-on-point.gif?raw=true" height="400"> |
 
-* `animateTo({LatLng? dest, double? zoom, double? rotation, Curve? curve})`
-* `animatedRotateFrom(double degree, {Curve? curve})`
-* `animatedRotateTo(double degree, {Curve? curve})`
-* `animatedRotateReset({Curve? curve})`
-* `animatedZoomTo(double newZoom, {Curve? curve})`
-* `animatedZoomIn({Curve? curve})`
-* `animatedZoomOut({Curve? curve})`
-* `centerOnPoint(LatLng point, {double? zoom, Curve? curve})`
-* `centerOnPoints(List<LatLng> points, {FitBoundsOptions? options, Curve? curve})`
-* `animatedFitBounds(LatLngBounds bounds, {FitBoundsOptions? options, Curve? curve})`
+Check the [`AnimatedMapController` API][animated-map-controller] for more!
 
 ## AnimatedMarkerLayer & AnimatedMarker
+
+| AnimatedMarker |
+| ----- |
+| <img src="https://raw.githubusercontent.com/TesteurManiak/flutter_map_animations/main/gifs/animated-marker.gif" height="400"> |
 
 ```dart
 FlutterMap(
@@ -79,7 +76,13 @@ FlutterMap(
             markers: [
                 AnimatedMarker(
                     point: LatLng(51.509364, -0.128928),
-                    builder: (_, __) => Icon(Icons.location_on),
+                    builder: (_, animation) {
+                        final size = 50.0 * animation.value;
+                        return Icon(
+                            Icons.location_on,
+                            size: size,
+                        );
+                    },
                 ),
             ],
         ),
@@ -91,7 +94,7 @@ FlutterMap(
 
 ## v0.5.0
 
-With flutter_map v6 some parameters have been removed or renamed:
+With [flutter_map v6][flutter-map-v6] some parameters have been removed or renamed:
 
 * `AnimatedMarker.rotateOrigin`, `AnimatedMarker.anchorPos` have been removed
 * `AnimatedMarker.rotateAlignment` has been renamed to `AnimatedMarker.alignment`
@@ -100,7 +103,7 @@ With flutter_map v6 some parameters have been removed or renamed:
 
 ## v0.4.0
 
-* With flutter_map v5 it's not possible anymore to extend `MapControllerImpl` which was used to use the `AnimatedMapController` directly as a `MapController` in the `FlutterMap` widget. Now an instance of `MapController` is created internally or can be passed as a parameter to the `AnimatedMapController` constructor. You can access it with the `mapController` getter:
+* With [flutter_map v5][flutter-map-v5] it's not possible anymore to extend `MapControllerImpl` which was used to use the `AnimatedMapController` directly as a `MapController` in the `FlutterMap` widget. Now an instance of `MapController` is created internally or can be passed as a parameter to the `AnimatedMapController` constructor. You can access it with the `mapController` getter:
 
 ```dart
 late final _animatedMapController = AnimatedMapController(vsync: this);
@@ -127,11 +130,32 @@ Widget build(BuildContext context) {
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/JaffaKetchup">
+            <img src="https://avatars.githubusercontent.com/u/58115698?v=4" width="100;" alt="JaffaKetchup"/>
+            <br />
+            <sub><b>Luka S</b></sub>
+        </a>
+    </td>
+    <td align="center">
         <a href="https://github.com/rorystephenson">
             <img src="https://avatars.githubusercontent.com/u/3683599?v=4" width="100;" alt="rorystephenson"/>
             <br />
             <sub><b>Rory Stephenson</b></sub>
         </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/ReinisSprogis">
+            <img src="https://avatars.githubusercontent.com/u/69913791?v=4" width="100;" alt="ReinisSprogis"/>
+            <br />
+            <sub><b>Reinis Sprogis</b></sub>
+        </a>
     </td></tr>
 </table>
 <!-- readme: contributors -end -->
+
+[pub-package]: https://pub.dev/packages/flutter_map_animations
+[pub-flutter-map]: https://pub.dev/packages/flutter_map
+[example]: https://testeurmaniak.github.io/flutter_map_animations/#/
+[animated-map-controller]: https://pub.dev/documentation/flutter_map_animations/latest/flutter_map_animations/AnimatedMapController-class.html
+[flutter-map-v6]: https://pub.dev/packages/flutter_map/changelog#600---20231009
+[flutter-map-v5]: https://pub.dev/packages/flutter_map/changelog#500---20230604

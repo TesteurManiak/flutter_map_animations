@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/src/animation_extensions.dart';
 import 'package:flutter_map_animations/src/animation_id.dart';
-import 'package:flutter_map_animations/src/lat_lng_tween.dart';
 import 'package:latlong2/latlong.dart';
 
 typedef _MovementCallback = bool Function(
   CurvedAnimation animation,
   LatLngTween latLngTween,
   Tween<double> zoomTween,
+  Tween<Offset> offset,
   Tween<double> rotateTween,
   AnimationId animationId,
 );
@@ -79,6 +79,9 @@ class AnimatedMapController {
   /// Animate the map to [dest] with an optional [zoom] level and [rotation] in
   /// degrees.
   ///
+  /// [offset] is only supported where [rotation] is `null`, due to a flutter_map
+  /// limitation.
+  ///
   /// If specified, [zoom] must be greater or equal to 0.
   ///
   /// {@template animated_map_controller.animate_to.curve}
@@ -88,6 +91,7 @@ class AnimatedMapController {
   Future<void> animateTo({
     LatLng? dest,
     double? zoom,
+    Offset offset = Offset.zero,
     double? rotation,
     Curve? curve,
     String? customId,
@@ -112,20 +116,14 @@ class AnimatedMapController {
       begin: mapController.camera.zoom,
       end: effectiveZoom,
     );
+    final offsetTween = Tween<Offset>(
+      begin: Offset.zero,
+      end: offset,
+    );
     double startRotation = this.rotation;
     double endRotation = effectiveRotation;
 
-    // If the difference between the bearings is greater than 180 degrees,
-    // add or subtract 360 degrees to one of them to make the shortest
-    // rotation direction counterclockwise.
-    final diff = endRotation - startRotation;
-    if (diff > 180.0) {
-      startRotation += 360.0;
-    } else if (diff < -180.0) {
-      endRotation += 360.0;
-    }
-
-    final rotateTween = Tween<double>(
+    final rotateTween = _AngleTween(
       begin: startRotation,
       end: endRotation,
     );
@@ -184,6 +182,7 @@ class AnimatedMapController {
         animation,
         latLngTween,
         zoomTween,
+        offsetTween,
         rotateTween,
         animationId,
       );
@@ -200,7 +199,14 @@ class AnimatedMapController {
     required bool hasRotation,
   }) {
     if (hasMovement && hasRotation) {
-      return (animation, latLngTween, zoomTween, rotateTween, animationId) {
+      return (
+        animation,
+        latLngTween,
+        zoomTween,
+        offsetTween,
+        rotateTween,
+        animationId,
+      ) {
         final result = mapController.moveAndRotate(
           latLngTween.evaluate(animation),
           zoomTween.evaluate(animation),
@@ -210,14 +216,29 @@ class AnimatedMapController {
         return result.moveSuccess || result.rotateSuccess;
       };
     } else if (hasMovement) {
-      return (animation, latLngTween, zoomTween, rotateTween, animationId) =>
+      return (
+        animation,
+        latLngTween,
+        zoomTween,
+        offsetTween,
+        rotateTween,
+        animationId,
+      ) =>
           mapController.move(
             latLngTween.evaluate(animation),
             zoomTween.evaluate(animation),
+            offset: offsetTween.evaluate(animation),
             id: animationId.id,
           );
     } else if (hasRotation) {
-      return (animation, latLngTween, zoomTween, rotateTween, animationId) =>
+      return (
+        animation,
+        latLngTween,
+        zoomTween,
+        offsetTween,
+        rotateTween,
+        animationId,
+      ) =>
           mapController.rotate(
             rotateTween.evaluate(animation),
             id: animationId.id,
@@ -308,58 +329,35 @@ class AnimatedMapController {
     return animateTo(zoom: newZoom, curve: curve, customId: customId);
   }
 
-  @Deprecated(
-    'Prefer `animatedFitCamera` with a `CameraFit.bounds()` instead. '
-    'This method will be removed in a future release as it is now redundant. '
-    'This method is deprecated since v0.5.0',
-  )
-  Future<void> animatedFitBounds(
-    LatLngBounds bounds, {
-    FitBoundsOptions? options,
-    Curve? curve,
-    String? customId,
-  }) {
-    final cameraFit = options == null
-        ? CameraFit.bounds(bounds: bounds)
-        : CameraFit.bounds(
-            bounds: bounds,
-            padding: options.padding,
-            maxZoom: options.maxZoom,
-            forceIntegerZoomLevel: options.forceIntegerZoomLevel,
-          );
-    return animatedFitCamera(
-      cameraFit: cameraFit,
-      curve: curve,
-      customId: customId,
-    );
-  }
-
   /// Will use the [cameraFit] to calculate the center and zoom level and then
   /// animate to that position.
-  ///
-  /// If [options] is not specified, it will use a default padding of 12.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
   Future<void> animatedFitCamera({
     required CameraFit cameraFit,
     Curve? curve,
     String? customId,
+    double? rotation,
   }) {
-    final centerZoom = cameraFit.fit(mapController.camera);
+    MapCamera camera = mapController.camera;
+    if (rotation != null) {
+      camera = camera.withRotation(rotation);
+    }
+
+    final centerZoom = cameraFit.fit(camera);
 
     return animateTo(
       dest: centerZoom.center,
       zoom: centerZoom.zoom,
       curve: curve,
       customId: customId,
+      rotation: rotation,
     );
   }
 
   /// Will use the [LatLngBounds.fromPoints] method to calculate the bounds of
   /// the [points] and then use the [animatedFitCamera] method to animate to
   /// that position.
-  ///
-  /// If [options] is not specified, it will use a default padding of 12.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
   @Deprecated(
@@ -382,5 +380,17 @@ class AnimatedMapController {
       curve: curve,
       customId: customId,
     );
+  }
+}
+
+class _AngleTween extends Tween<double> {
+  _AngleTween({required double super.begin, required double super.end});
+
+  @override
+  double lerp(double t) => begin! + _angleDifference(begin!, end!) * t;
+
+  static double _angleDifference(double angle1, double angle2) {
+    final diff = (angle2 - angle1 + 180) % 360 - 180;
+    return diff < -180 ? diff + 360 : diff;
   }
 }
