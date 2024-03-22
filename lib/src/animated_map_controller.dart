@@ -123,17 +123,7 @@ class AnimatedMapController {
     double startRotation = this.rotation;
     double endRotation = effectiveRotation;
 
-    // If the difference between the bearings is greater than 180 degrees,
-    // add or subtract 360 degrees to one of them to make the shortest
-    // rotation direction counterclockwise.
-    final diff = endRotation - startRotation;
-    if (diff > 180.0) {
-      startRotation += 360.0;
-    } else if (diff < -180.0) {
-      endRotation += 360.0;
-    }
-
-    final rotateTween = Tween<double>(
+    final rotateTween = _AngleTween(
       begin: startRotation,
       end: endRotation,
     );
@@ -390,5 +380,17 @@ class AnimatedMapController {
       curve: curve,
       customId: customId,
     );
+  }
+}
+
+class _AngleTween extends Tween<double> {
+  _AngleTween({required double super.begin, required double super.end});
+
+  @override
+  double lerp(double t) => begin! + _angleDifference(begin!, end!) * t;
+
+  static double _angleDifference(double angle1, double angle2) {
+    final diff = (angle2 - angle1 + 180) % 360 - 180;
+    return diff < -180 ? diff + 360 : diff;
   }
 }
