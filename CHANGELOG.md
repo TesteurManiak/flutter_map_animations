@@ -1,3 +1,7 @@
+## 0.7.0-dev.1
+
+
+
 ## 0.6.0
 
 * Dependencies_upgrade by @ReinisSprogis in https://github.com/TesteurManiak/flutter_map_animations/pull/26
