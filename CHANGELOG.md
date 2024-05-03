@@ -1,6 +1,9 @@
 ## 0.7.0-dev.1
 
+* 30 version 7 support by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/31
 
+
+**Full Changelog**: https://github.com/TesteurManiak/flutter_map_animations/compare/0.6.0...0.7.0-dev.1
 
 ## 0.6.0
 
