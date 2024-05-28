@@ -1,9 +1,14 @@
-## 0.7.0-dev.1
+## 0.7.0
 
 * 30 version 7 support by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/31
+* chore(deps): bump custom_lint from 0.5.11 to 0.6.4 by @dependabot in https://github.com/TesteurManiak/flutter_map_animations/pull/33
+* chore: bump dependencies by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/34
 
+## New Contributors
+* @dependabot made their first contribution in https://github.com/TesteurManiak/flutter_map_animations/pull/33
 
-**Full Changelog**: https://github.com/TesteurManiak/flutter_map_animations/compare/0.6.0...0.7.0-dev.1
+**Full Changelog**: https://github.com/TesteurManiak/flutter_map_animations/compare/0.6.0...0.7.0
+
 
 ## 0.6.0
 
