@@ -95,6 +95,7 @@ class AnimatedMapController {
     double? rotation,
     Curve? curve,
     String? customId,
+    Duration? duration,
   }) {
     if (zoom != null && zoom < 0) {
       throw ArgumentError.value(
@@ -141,7 +142,7 @@ class AnimatedMapController {
     // This controller will be disposed when the animation is completed.
     final animationController = AnimationController(
       vsync: vsync,
-      duration: duration,
+      duration: duration ?? this.duration,
     );
     _animationController = animationController;
 
@@ -256,8 +257,15 @@ class AnimatedMapController {
     double? zoom,
     Curve? curve,
     String? customId,
+    Duration? duration,
   }) {
-    return animateTo(dest: point, zoom: zoom, curve: curve, customId: customId);
+    return animateTo(
+      dest: point,
+      zoom: zoom,
+      curve: curve,
+      customId: customId,
+      duration: duration,
+    );
   }
 
   /// Apply a rotation of [degree] to the current rotation.
@@ -267,11 +275,13 @@ class AnimatedMapController {
     double degree, {
     Curve? curve,
     String? customId,
+    Duration? duration,
   }) {
     return animateTo(
       rotation: rotation + degree,
       curve: curve,
       customId: customId,
+      duration: duration,
     );
   }
 
@@ -282,25 +292,45 @@ class AnimatedMapController {
     double degree, {
     Curve? curve,
     String? customId,
+    Duration? duration,
   }) {
-    return animateTo(rotation: degree, curve: curve, customId: customId);
+    return animateTo(
+      rotation: degree,
+      curve: curve,
+      customId: customId,
+      duration: duration,
+    );
   }
 
   /// Reset the rotation to 0.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
-  Future<void> animatedRotateReset({Curve? curve, String? customId}) {
-    return animateTo(rotation: 0, curve: curve, customId: customId);
+  Future<void> animatedRotateReset({
+    Curve? curve,
+    String? customId,
+    Duration? duration,
+  }) {
+    return animateTo(
+      rotation: 0,
+      curve: curve,
+      customId: customId,
+      duration: duration,
+    );
   }
 
   /// Add one level to the current zoom level.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
-  Future<void> animatedZoomIn({Curve? curve, String? customId}) {
+  Future<void> animatedZoomIn({
+    Curve? curve,
+    String? customId,
+    Duration? duration,
+  }) {
     return animateTo(
       zoom: mapController.camera.zoom + 1,
       curve: curve,
       customId: customId,
+      duration: duration,
     );
   }
 
@@ -309,11 +339,20 @@ class AnimatedMapController {
   /// If the current zoom level is 0, nothing will happen.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
-  FutureOr<void> animatedZoomOut({Curve? curve, String? customId}) {
+  Future<void> animatedZoomOut({
+    Curve? curve,
+    String? customId,
+    Duration? duration,
+  }) async {
     final newZoom = mapController.camera.zoom - 1;
-    if (newZoom < 0) return null;
+    if (newZoom < 0) return;
 
-    return animateTo(zoom: newZoom, curve: curve, customId: customId);
+    return animateTo(
+      zoom: newZoom,
+      curve: curve,
+      customId: customId,
+      duration: duration,
+    );
   }
 
   /// Set the zoom level to [newZoom].
@@ -325,8 +364,14 @@ class AnimatedMapController {
     double newZoom, {
     Curve? curve,
     String? customId,
+    Duration? duration,
   }) {
-    return animateTo(zoom: newZoom, curve: curve, customId: customId);
+    return animateTo(
+      zoom: newZoom,
+      curve: curve,
+      customId: customId,
+      duration: duration,
+    );
   }
 
   /// Will use the [cameraFit] to calculate the center and zoom level and then
@@ -338,6 +383,7 @@ class AnimatedMapController {
     Curve? curve,
     String? customId,
     double? rotation,
+    Duration? duration,
   }) {
     MapCamera camera = mapController.camera;
     if (rotation != null) {
@@ -352,6 +398,7 @@ class AnimatedMapController {
       curve: curve,
       customId: customId,
       rotation: rotation,
+      duration: duration,
     );
   }
 
