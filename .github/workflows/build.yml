@@ -22,3 +22,4 @@ jobs:
           workingDir: example
           webRenderer: canvaskit
           baseHref: /flutter_map_animations/
+          customArgs: --wasm
