@@ -31,6 +31,6 @@ dependencies:
 
 dev_dependencies:
   custom_lint: ">=0.5.11 <0.7.0"
-  fd_lints: ^2.2.1
+  fd_lints: ^2.3.0
   flutter_test:
     sdk: flutter
