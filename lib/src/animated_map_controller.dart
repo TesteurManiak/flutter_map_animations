@@ -134,7 +134,8 @@ class AnimatedMapController {
     final bool hasRotation = rotation != null && rotation != this.rotation;
     final bool hasMovement =
         (dest != null && dest != mapController.camera.center) ||
-            (zoom != null && zoom != mapController.camera.zoom);
+            (zoom != null && zoom != mapController.camera.zoom) ||
+            (offset != Offset.zero);
     final movementCallback =
         _movementCallback(hasMovement: hasMovement, hasRotation: hasRotation);
     if (movementCallback == null) return Future.value();
