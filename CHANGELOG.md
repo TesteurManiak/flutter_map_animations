@@ -1,3 +1,10 @@
+## 0.7.1
+
+* 35 animation duration for animateto by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/36
+* Fix #39 AnimateTo same point w/ different offset by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/41
+
+**Full Changelog**: https://github.com/TesteurManiak/flutter_map_animations/compare/0.7.0...0.7.1
+
 ## 0.7.0
 
 * 30 version 7 support by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/31
