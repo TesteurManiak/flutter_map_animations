@@ -18,6 +18,7 @@ class AnimatedMarker {
     this.alignment,
     this.duration = const Duration(milliseconds: 300),
     this.curve = Curves.ease,
+    this.animatePosition = false,
   });
 
   /// Coordinates of the marker
@@ -46,6 +47,11 @@ class AnimatedMarker {
   /// The curve of the animation.
   final Curve curve;
 
+  /// If true, marker will animate position changes.
+  ///
+  /// Default is false.
+  final bool animatePosition;
+
   AnimatedMarker copyWith({
     LatLng? point,
     Key? key,
@@ -55,6 +61,7 @@ class AnimatedMarker {
     Alignment? alignment,
     Duration? duration,
     Curve? curve,
+    bool? animatePosition,
   }) {
     return AnimatedMarker(
       point: point ?? this.point,
@@ -65,6 +72,7 @@ class AnimatedMarker {
       alignment: alignment ?? this.alignment,
       duration: duration ?? this.duration,
       curve: curve ?? this.curve,
+      animatePosition: animatePosition ?? this.animatePosition,
       builder: builder,
     );
   }

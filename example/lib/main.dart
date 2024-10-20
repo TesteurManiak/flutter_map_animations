@@ -140,11 +140,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               final newMarkers = List.of(markers.value);
               final lastMarker = newMarkers.removeLast().copyWith(
                     point: _animatedMapController.mapController.camera.center,
+                    animatePosition: true,
                   );
               newMarkers.add(lastMarker);
               markers.value = newMarkers;
             },
-            child: const Icon(Icons.center_focus_weak),
+            child: const Icon(Icons.play_arrow_rounded),
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
