@@ -6,8 +6,9 @@ typedef AnimatedWidgetBuilder = Widget Function(
   Animation<double> animation,
 );
 
+@immutable
 class AnimatedMarker {
-  AnimatedMarker({
+  const AnimatedMarker({
     required this.point,
     required this.builder,
     this.key,
@@ -44,4 +45,27 @@ class AnimatedMarker {
 
   /// The curve of the animation.
   final Curve curve;
+
+  AnimatedMarker copyWith({
+    LatLng? point,
+    Key? key,
+    double? width,
+    double? height,
+    bool? rotate,
+    Alignment? alignment,
+    Duration? duration,
+    Curve? curve,
+  }) {
+    return AnimatedMarker(
+      point: point ?? this.point,
+      key: key ?? this.key,
+      width: width ?? this.width,
+      height: height ?? this.height,
+      rotate: rotate ?? this.rotate,
+      alignment: alignment ?? this.alignment,
+      duration: duration ?? this.duration,
+      curve: curve ?? this.curve,
+      builder: builder,
+    );
+  }
 }

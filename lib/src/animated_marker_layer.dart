@@ -28,11 +28,12 @@ class AnimatedMarkerLayer extends StatelessWidget {
 
     return MobileLayerTransformer(
       child: Stack(
-        children: (List<AnimatedMarker> markers) sync* {
+        children: () sync* {
           for (final m in markers) {
             // Resolve real alignment
-            final left = 0.5 * m.width * ((m.alignment ?? alignment).x + 1);
-            final top = 0.5 * m.height * ((m.alignment ?? alignment).y + 1);
+            final effectiveAlignment = m.alignment ?? alignment;
+            final left = 0.5 * m.width * (effectiveAlignment.x + 1);
+            final top = 0.5 * m.height * (effectiveAlignment.y + 1);
             final right = m.width - left;
             final bottom = m.height - top;
 
@@ -50,32 +51,119 @@ class AnimatedMarkerLayer extends StatelessWidget {
             // Apply map camera to marker position
             final pos = pxPoint - mapCamera.pixelOrigin.toDoublePoint();
 
-            yield Positioned(
-              key: m.key,
-              width: m.width,
-              height: m.height,
-              left: pos.x - right,
-              top: pos.y - bottom,
-              child: (m.rotate ?? rotate)
-                  ? Transform.rotate(
-                      angle: -mapCamera.rotationRad,
-                      alignment: (m.alignment ?? alignment) * -1,
-                      child: _AnimatedMarkerWidget(marker: m),
-                    )
-                  : _AnimatedMarkerWidget(marker: m),
+            yield _MarkerPosition(
+              alignment: effectiveAlignment,
+              rotate: rotate,
+              pos: pos,
+              marker: m,
             );
           }
-        }(markers)
+        }()
             .toList(),
       ),
     );
   }
 }
 
-class _AnimatedMarkerWidget extends StatefulWidget {
-  const _AnimatedMarkerWidget({
+class _MarkerPosition extends StatefulWidget {
+  const _MarkerPosition({
+    required this.rotate,
+    required this.alignment,
+    required this.pos,
     required this.marker,
   });
+
+  final bool rotate;
+  final Alignment alignment;
+  final Point<double> pos;
+  final AnimatedMarker marker;
+
+  @override
+  State<_MarkerPosition> createState() => _MarkerPositionState();
+}
+
+class _MarkerPositionState extends State<_MarkerPosition>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController controller;
+
+  late Tween<double> leftTween;
+  late Tween<double> topTween;
+
+  double get left => 0.5 * widget.marker.width * (widget.alignment.x + 1);
+  double get top => 0.5 * widget.marker.height * (widget.alignment.y + 1);
+  double get right => widget.marker.width - left;
+  double get bottom => widget.marker.height - top;
+
+  double calcLeftPos(Point<double> pos) => pos.x - right;
+  double calcTopPos(Point<double> pos) => pos.y - bottom;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final leftPos = calcLeftPos(widget.pos);
+    final topPos = calcTopPos(widget.pos);
+
+    leftTween = Tween<double>(begin: leftPos);
+    topTween = Tween<double>(begin: topPos);
+    controller = AnimationController(
+      vsync: this,
+      duration: widget.marker.duration,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant _MarkerPosition oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final oldPos = oldWidget.pos;
+    final newPos = widget.pos;
+    if (oldPos != newPos) {
+      leftTween =
+          Tween<double>(begin: calcLeftPos(oldPos), end: calcLeftPos(newPos));
+      topTween =
+          Tween<double>(begin: calcTopPos(oldPos), end: calcTopPos(newPos));
+      controller
+        ..reset()
+        ..forward();
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final mapCamera = MapCamera.of(context);
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, _) {
+        final left = leftTween.evaluate(controller);
+        final top = topTween.evaluate(controller);
+        return Positioned(
+          key: widget.marker.key,
+          width: widget.marker.width,
+          height: widget.marker.height,
+          left: left,
+          top: top,
+          child: (widget.marker.rotate ?? widget.rotate)
+              ? Transform.rotate(
+                  angle: -mapCamera.rotationRad,
+                  alignment: widget.alignment * -1,
+                  child: _AnimatedMarkerWidget(widget.marker),
+                )
+              : _AnimatedMarkerWidget(widget.marker),
+        );
+      },
+    );
+  }
+}
+
+class _AnimatedMarkerWidget extends StatefulWidget {
+  const _AnimatedMarkerWidget(this.marker);
 
   final AnimatedMarker marker;
 

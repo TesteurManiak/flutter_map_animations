@@ -132,6 +132,20 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             },
             child: const Icon(Icons.center_focus_strong),
           ),
+          FloatingActionButton(
+            tooltip: 'Move last marker to center',
+            onPressed: () {
+              if (markers.value.isEmpty) return;
+
+              final newMarkers = List.of(markers.value);
+              final lastMarker = newMarkers.removeLast().copyWith(
+                    point: _animatedMapController.mapController.camera.center,
+                  );
+              newMarkers.add(lastMarker);
+              markers.value = newMarkers;
+            },
+            child: const Icon(Icons.center_focus_weak),
+          ),
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
