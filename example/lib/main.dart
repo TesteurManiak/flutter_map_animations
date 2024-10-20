@@ -63,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 tileUpdateTransformer: _animatedMoveTileUpdateTransformer,
                 tileProvider: CancellableNetworkTileProvider(),
               ),
-              AnimatedMarkerLayer(markers: markers),
+              AnimatedMarkerLayer(markers: markers, culling: false),
             ],
           );
         },
