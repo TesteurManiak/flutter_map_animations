@@ -60,15 +60,15 @@ class AnimatedMapController {
     return effectiveRotation;
   }
 
-  /// Controller of the current animation.
-  AnimationController? _animationController;
+  final _runningAnimations = <AnimationController>{};
 
   void dispose() {
-    final isAnimating = _animationController?.isAnimating ?? false;
-    if (isAnimating) {
-      _animationController?.stop();
+    // Stop running animations and dispose their controllers.
+    for (final animation in _runningAnimations) {
+      final isAnimating = animation.isAnimating;
+      if (isAnimating) animation.stop();
+      animation.dispose();
     }
-    _animationController?.dispose();
 
     // Dispose the map controller if it was created internally.
     if (_internal) {
@@ -145,14 +145,14 @@ class AnimatedMapController {
       vsync: vsync,
       duration: duration ?? this.duration,
     );
-    _animationController = animationController;
+    _runningAnimations.add(animationController);
 
     final animation = CurvedAnimation(
       parent: animationController,
       curve: curve ?? this.curve,
     )..onEnd(() {
         animationController.dispose();
-        _animationController = null;
+        _runningAnimations.remove(animationController);
       });
 
     AnimationId animationId = AnimationId(
