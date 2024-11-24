@@ -63,13 +63,16 @@ class AnimatedMapController {
   /// Controller of the current animation.
   AnimationController? _animationController;
 
-  void dispose() {
+  void stopAndDisposeAnimationController() {
     final isAnimating = _animationController?.isAnimating ?? false;
     if (isAnimating) {
       _animationController?.stop();
     }
     _animationController?.dispose();
+  }
 
+  void dispose() {
+    stopAndDisposeAnimationController();
     // Dispose the map controller if it was created internally.
     if (_internal) {
       mapController.dispose();
@@ -145,6 +148,7 @@ class AnimatedMapController {
       vsync: vsync,
       duration: duration ?? this.duration,
     );
+    stopAndDisposeAnimationController();
     _animationController = animationController;
 
     final animation = CurvedAnimation(
