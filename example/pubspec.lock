@@ -92,7 +92,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "0.7.1"
+    version: "0.8.0"
   flutter_map_cancellable_tile_provider:
     dependency: "direct main"
     description:
