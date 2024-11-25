@@ -23,6 +23,7 @@ class AnimatedMapController {
     MapController? mapController,
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.fastOutSlowIn,
+    this.cancelPreviousAnimations = false,
   })  : mapController = mapController ?? MapController(),
         _internal = mapController == null;
 
@@ -44,10 +45,20 @@ class AnimatedMapController {
   final bool _internal;
 
   /// The duration of the animation.
+  ///
+  /// Defaults to 500 milliseconds.
   final Duration duration;
 
   /// The curve of the animation.
+  ///
+  /// Defaults to [Curves.fastOutSlowIn].
   final Curve curve;
+
+  /// Global option to define if previous animations should be canceled when a
+  /// new one is triggered.
+  ///
+  /// Defaults to `false`.
+  final bool cancelPreviousAnimations;
 
   /// Current rotation of the map.
   double get rotation {
@@ -64,11 +75,7 @@ class AnimatedMapController {
 
   void dispose() {
     // Stop running animations and dispose their controllers.
-    for (final animation in _runningAnimations) {
-      final isAnimating = animation.isAnimating;
-      if (isAnimating) animation.stop();
-      animation.dispose();
-    }
+    stopAnimations();
 
     // Dispose the map controller if it was created internally.
     if (_internal) {
@@ -87,6 +94,15 @@ class AnimatedMapController {
   /// {@template animated_map_controller.animate_to.curve}
   /// If [curve] is not specified, the one specified in the constructor will be
   /// used.
+  ///
+  /// Defaults to the value specified in the constructor.
+  /// {@endtemplate}
+  ///
+  /// {@template animated_map_controller.animate_to_cancel_previous_animations}
+  /// If [cancelPreviousAnimations] is `true`, all ongoing animations will be
+  /// stopped before starting the new one.
+  ///
+  /// Defaults to the value specified in the constructor.
   /// {@endtemplate}
   Future<void> animateTo({
     LatLng? dest,
@@ -96,6 +112,7 @@ class AnimatedMapController {
     Curve? curve,
     String? customId,
     Duration? duration,
+    bool? cancelPreviousAnimations,
   }) {
     if (zoom != null && zoom < 0) {
       throw ArgumentError.value(
@@ -139,6 +156,11 @@ class AnimatedMapController {
     final movementCallback =
         _movementCallback(hasMovement: hasMovement, hasRotation: hasRotation);
     if (movementCallback == null) return Future.value();
+
+    // If cancelPreviousAnimations is true, stop all ongoing animations.
+    if (cancelPreviousAnimations ?? this.cancelPreviousAnimations) {
+      stopAnimations();
+    }
 
     // This controller will be disposed when the animation is completed.
     final animationController = AnimationController(
@@ -253,12 +275,15 @@ class AnimatedMapController {
   /// Center the map on [point] with an optional [zoom] level.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
+  ///
+  /// {@macro animated_map_controller.animate_to_cancel_previous_animations}
   Future<void> centerOnPoint(
     LatLng point, {
     double? zoom,
     Curve? curve,
     String? customId,
     Duration? duration,
+    bool? cancelPreviousAnimations,
   }) {
     return animateTo(
       dest: point,
@@ -266,34 +291,42 @@ class AnimatedMapController {
       curve: curve,
       customId: customId,
       duration: duration,
+      cancelPreviousAnimations: cancelPreviousAnimations,
     );
   }
 
   /// Apply a rotation of [degree] to the current rotation.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
+  ///
+  /// {@macro animated_map_controller.animate_to_cancel_previous_animations}
   Future<void> animatedRotateFrom(
     double degree, {
     Curve? curve,
     String? customId,
     Duration? duration,
+    bool? cancelPreviousAnimations,
   }) {
     return animateTo(
       rotation: rotation + degree,
       curve: curve,
       customId: customId,
       duration: duration,
+      cancelPreviousAnimations: cancelPreviousAnimations,
     );
   }
 
   /// Set the rotation to [degree].
   ///
   /// {@macro animated_map_controller.animate_to.curve}
+  ///
+  /// {@macro animated_map_controller.animate_to_cancel_previous_animations}
   Future<void> animatedRotateTo(
     double degree, {
     Curve? curve,
     String? customId,
     Duration? duration,
+    bool? cancelPreviousAnimations,
   }) {
     return animateTo(
       rotation: degree,
@@ -306,32 +339,40 @@ class AnimatedMapController {
   /// Reset the rotation to 0.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
+  ///
+  /// {@macro animated_map_controller.animate_to_cancel_previous_animations}
   Future<void> animatedRotateReset({
     Curve? curve,
     String? customId,
     Duration? duration,
+    bool? cancelPreviousAnimations,
   }) {
     return animateTo(
       rotation: 0,
       curve: curve,
       customId: customId,
       duration: duration,
+      cancelPreviousAnimations: cancelPreviousAnimations,
     );
   }
 
   /// Add one level to the current zoom level.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
+  ///
+  /// {@macro animated_map_controller.animate_to_cancel_previous_animations}
   Future<void> animatedZoomIn({
     Curve? curve,
     String? customId,
     Duration? duration,
+    bool? cancelPreviousAnimations,
   }) {
     return animateTo(
       zoom: mapController.camera.zoom + 1,
       curve: curve,
       customId: customId,
       duration: duration,
+      cancelPreviousAnimations: cancelPreviousAnimations,
     );
   }
 
@@ -340,10 +381,13 @@ class AnimatedMapController {
   /// If the current zoom level is 0, nothing will happen.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
+  ///
+  /// {@macro animated_map_controller.animate_to_cancel_previous_animations}
   Future<void> animatedZoomOut({
     Curve? curve,
     String? customId,
     Duration? duration,
+    bool? cancelPreviousAnimations,
   }) async {
     final newZoom = mapController.camera.zoom - 1;
     if (newZoom < 0) return;
@@ -353,6 +397,7 @@ class AnimatedMapController {
       curve: curve,
       customId: customId,
       duration: duration,
+      cancelPreviousAnimations: cancelPreviousAnimations,
     );
   }
 
@@ -361,17 +406,21 @@ class AnimatedMapController {
   /// [newZoom] must be greater or equal to 0.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
+  ///
+  /// {@macro animated_map_controller.animate_to_cancel_previous_animations}
   Future<void> animatedZoomTo(
     double newZoom, {
     Curve? curve,
     String? customId,
     Duration? duration,
+    bool? cancelPreviousAnimations,
   }) {
     return animateTo(
       zoom: newZoom,
       curve: curve,
       customId: customId,
       duration: duration,
+      cancelPreviousAnimations: cancelPreviousAnimations,
     );
   }
 
@@ -379,12 +428,15 @@ class AnimatedMapController {
   /// animate to that position.
   ///
   /// {@macro animated_map_controller.animate_to.curve}
+  ///
+  /// {@macro animated_map_controller.animate_to_cancel_previous_animations}
   Future<void> animatedFitCamera({
     required CameraFit cameraFit,
     Curve? curve,
     String? customId,
     double? rotation,
     Duration? duration,
+    bool? cancelPreviousAnimations,
   }) {
     MapCamera camera = mapController.camera;
     if (rotation != null) {
@@ -400,6 +452,7 @@ class AnimatedMapController {
       customId: customId,
       rotation: rotation,
       duration: duration,
+      cancelPreviousAnimations: cancelPreviousAnimations,
     );
   }
 
@@ -428,6 +481,15 @@ class AnimatedMapController {
       curve: curve,
       customId: customId,
     );
+  }
+
+  /// Stop all ongoing animations.
+  void stopAnimations() {
+    for (final animation in _runningAnimations) {
+      if (animation.isAnimating) animation.stop();
+      animation.dispose();
+    }
+    _runningAnimations.clear();
   }
 }
 
