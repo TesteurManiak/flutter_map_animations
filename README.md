@@ -31,13 +31,14 @@ class _MyWidgetState extends State<MyWidget> with TickerProviderStateMixin {
 }
 ```
 
-You can specify the animation `duration` and `curve`:
+You can specify globally the animation's `duration`, `curve` and if previous animations should be stopped with `cancelPreviousAnimations`:
 
 ```dart
 AnimatedMapController(
     vsync: this,
     duration: const Duration(milliseconds: 500),
     curve: Curves.easeInOut,
+    cancelPreviousAnimations: true, // Default to false
 );
 ```
 

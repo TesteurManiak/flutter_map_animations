@@ -1,3 +1,11 @@
+## 0.8.0
+
+* Fix: Stop and dispose all running animations by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/45
+* Feat: Added `AnimatedMapController.stopAnimations()` method and `cancelPreviousAnimations` properties by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/45
+
+
+**Full Changelog**: https://github.com/TesteurManiak/flutter_map_animations/compare/0.7.1...0.8.0
+
 ## 0.7.1
 
 * 35 animation duration for animateto by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/36
