@@ -1,5 +1,4 @@
-import 'dart:math' as math;
-
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_animations/src/animation_id.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -70,14 +69,14 @@ void main() {
               zoom: 6,
               crs: const CrsSimple(),
               rotation: 0,
-              nonRotatedSize: const math.Point(50, 100),
+              nonRotatedSize: const Size(50, 100),
             ),
             camera: MapCamera(
               center: const LatLng(2, 4),
               zoom: 5,
               crs: const CrsSimple(),
               rotation: 0,
-              nonRotatedSize: const math.Point(50, 100),
+              nonRotatedSize: const Size(50, 100),
             ),
             source: MapEventSource.custom,
             id: validId,
@@ -95,7 +94,7 @@ void main() {
               zoom: 6,
               crs: const CrsSimple(),
               rotation: 0,
-              nonRotatedSize: const math.Point(50, 100),
+              nonRotatedSize: const Size(50, 100),
             ),
             source: MapEventSource.custom,
             tapPosition: const LatLng(3, 4),
