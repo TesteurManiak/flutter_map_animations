@@ -1,3 +1,11 @@
+## 0.9.0
+
+* chore(deps): bump custom_lint from 0.6.10 to 0.7.0 by @dependabot in https://github.com/TesteurManiak/flutter_map_animations/pull/46
+* Support flutter_map v8 by @JaffaKetchup in https://github.com/TesteurManiak/flutter_map_animations/pull/47
+
+
+**Full Changelog**: https://github.com/TesteurManiak/flutter_map_animations/compare/0.8.0...0.9.0
+
 ## 0.8.0
 
 * Fix: Stop and dispose all running animations by @TesteurManiak in https://github.com/TesteurManiak/flutter_map_animations/pull/45
