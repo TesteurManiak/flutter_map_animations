@@ -86,8 +86,7 @@ class AnimatedMapController {
   /// Animate the map to [dest] with an optional [zoom] level and [rotation] in
   /// degrees.
   ///
-  /// [offset] is only supported where [rotation] is `null`, due to a flutter_map
-  /// limitation.
+  /// [offset] is applied for position and rotation.
   ///
   /// If specified, [zoom] must be greater or equal to 0.
   ///
@@ -231,13 +230,22 @@ class AnimatedMapController {
         rotateTween,
         animationId,
       ) {
-        final result = mapController.moveAndRotate(
+        final moveSuccess = mapController.move(
           latLngTween.evaluate(animation),
           zoomTween.evaluate(animation),
-          rotateTween.evaluate(animation),
+          offset: offsetTween.evaluate(animation),
           id: animationId.id,
         );
-        return result.moveSuccess || result.rotateSuccess;
+
+        final rotateSuccess = mapController.rotateAroundPoint(
+          rotateTween.evaluate(animation),
+          offset: offsetTween.evaluate(animation),
+          id: animationId.id,
+        );
+
+        return moveSuccess &&
+            rotateSuccess.rotateSuccess &&
+            rotateSuccess.moveSuccess;
       };
     } else if (hasMovement) {
       return (
@@ -262,11 +270,14 @@ class AnimatedMapController {
         offsetTween,
         rotateTween,
         animationId,
-      ) =>
-          mapController.rotate(
-            rotateTween.evaluate(animation),
-            id: animationId.id,
-          );
+      ) {
+        final result = mapController.rotateAroundPoint(
+          rotateTween.evaluate(animation),
+          offset: offsetTween.evaluate(animation),
+          id: animationId.id,
+        );
+        return result.rotateSuccess;
+      };
     } else {
       return null;
     }
