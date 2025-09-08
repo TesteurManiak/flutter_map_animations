@@ -212,7 +212,13 @@ class AnimatedMapController {
       );
     });
 
-    return animationController.forward();
+    // Defer the animation start until after the current frame to ensure
+    // the underlying MapInteractiveViewer has completed initialization.
+    final completer = Completer<void>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      animationController.forward().then(completer.complete);
+    });
+    return completer.future;
   }
 
   // Determine what MapController method should be called based on whether
