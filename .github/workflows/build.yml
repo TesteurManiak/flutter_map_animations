@@ -6,18 +6,18 @@ on:
     branches:
       - main
     paths:
-      - 'example/**'
+      - "example/**"
 
 jobs:
   build:
     name: Build example
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.1.1
-      - uses: subosito/flutter-action@v2.14.0
+      - uses: actions/checkout@v6.0.2
+      - uses: subosito/flutter-action@v2.23.0
         with:
           cache: true
-      - uses: bluefireteam/flutter-gh-pages@v8
+      - uses: bluefireteam/flutter-gh-pages@v9
         with:
           workingDir: example
           webRenderer: canvaskit
