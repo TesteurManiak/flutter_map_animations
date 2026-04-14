@@ -180,7 +180,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               children: [
                 const Text('Transformer'),
                 Switch(
-                  activeColor: Colors.blue.shade200,
+                  activeThumbColor: Colors.blue.shade200,
                   activeTrackColor: Colors.black38,
                   value: _useTransformer,
                   onChanged: (newValue) {

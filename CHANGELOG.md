@@ -1,3 +1,9 @@
+## 0.10.0
+
+* chore(deps): bump fd_lints from 2.3.0 to 3.0.0 by @TesteurManiak
+* chore(deps): bump flutter_map from 8.0.0 to 8.3.0 by @TesteurManiak
+* chore(deps): removed custom_lint by @TesteurManiak
+
 ## 0.9.0
 
 * chore(deps): bump custom_lint from 0.6.10 to 0.7.0 by @dependabot in https://github.com/TesteurManiak/flutter_map_animations/pull/46

@@ -1,5 +1,2 @@
-include: package:fd_lints/flutter.yaml
-
-analyzer:
-  plugins:
-    - custom_lint
+plugins:
+  fd_lints: ^3.0.0
