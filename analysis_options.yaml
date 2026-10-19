@@ -1,2 +1,5 @@
+analyzer:
+  exclude:
+    - build/**
 plugins:
   fd_lints: ^3.0.0
