@@ -1,3 +1,7 @@
+## 0.11.0
+
+* chore(deps): bump latlong2 from 0.9.1 to 0.10.1 by @dependabot[bot] in https://github.com/TesteurManiak/flutter_map_animations/pull/52
+
 ## 0.10.0
 
 * chore(deps): bump fd_lints from 2.3.0 to 3.0.0 by @TesteurManiak
