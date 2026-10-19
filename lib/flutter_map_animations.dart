@@ -1,4 +1,4 @@
-library flutter_map_animations;
+library;
 
 export 'src/animated_map_controller.dart';
 export 'src/animated_marker.dart';

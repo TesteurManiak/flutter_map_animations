@@ -30,6 +30,6 @@ dependencies:
   latlong2: ">=0.9.1 <0.11.0"
 
 dev_dependencies:
-  fd_lints: ^3.0.0
+  flutter_lints: 6.0.0
   flutter_test:
     sdk: flutter
